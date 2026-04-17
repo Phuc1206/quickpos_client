@@ -94,7 +94,8 @@
 
   --sidebar-border: oklch(0.922 0 0);
 
-  --sidebar-ring: oklch(0.708 0 0)}
+  --sidebar-ring: oklch(0.708 0 0)
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -116,7 +117,7 @@
   }
 }
 
-#root {
+/* #root {
   width: 1126px;
   max-width: 100%;
   margin: 0 auto;
@@ -126,7 +127,13 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+} */
+
+#root {
+  width: 100%;
+  margin: 0;
 }
+
 
 body {
   margin: 0;
@@ -259,8 +266,31 @@ code {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;}
+    @apply border-border outline-ring/50;
+  }
+
   body {
-    @apply bg-background text-foreground;}
+    @apply bg-background text-foreground;
+  }
+
   html {
-    @apply font-sans;}}
+    @apply font-sans;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* tạo biến animation */
+@theme {
+  --animate-float: float 3s ease-in-out infinite;
+}

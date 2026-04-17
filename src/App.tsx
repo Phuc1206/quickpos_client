@@ -1,11 +1,10 @@
-import './App.css'
+import './App.css';
+import LoginPage from './pages/Login';
 
 function App() {
 
   return (
-    <>
-      <p className='text-red-500'>Hello, Tailwind CSS!</p>
-    </>
+    <LoginPage />
   )
 }
 
