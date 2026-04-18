@@ -1,11 +1,13 @@
-import './App.css';
-import LoginPage from './pages/Login';
+import { QueryClientProvider } from "@/services";
+import "./App.css";
+import LoginPage from "./pages/Login";
 
 function App() {
-
-  return (
-    <LoginPage />
-  )
+	return (
+		<QueryClientProvider>
+			<LoginPage />
+		</QueryClientProvider>
+	);
 }
 
-export default App
+export default App;
