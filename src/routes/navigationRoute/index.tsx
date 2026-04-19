@@ -1,22 +1,18 @@
 import type { TNavigateItem, TNavigationConfig } from "@/types/routesType";
 import { Route } from "react-router";
-
-
 export interface IRoutersProps {
     config?: TNavigationConfig;
     indexPath?: string;
 }
 
 const renderRoutes = (navigateItem: TNavigateItem) => {
-    const slug = navigateItem.slug.replace("/", "");
-
     if (!navigateItem?.children) {
         if (!navigateItem?.PageComponent) {
             console.error("PageComponent is undefined");
-            return <></>;
+            return <div>Không tìm thấy trang</div>;
         }
 
-        return <Route key={navigateItem._id} path={slug} element={<navigateItem.PageComponent />} />;
+        return <Route key={navigateItem._id} path={navigateItem.slug} element={<navigateItem.PageComponent />} />;
     }
 
     const routeElements = navigateItem.children.map((item) => {
@@ -24,7 +20,7 @@ const renderRoutes = (navigateItem: TNavigateItem) => {
     });
 
     return (
-        <Route key={navigateItem._id} path={slug}>
+        <Route key={navigateItem._id} path={navigateItem.slug}>
             {routeElements}
         </Route>
     );

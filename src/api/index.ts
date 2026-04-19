@@ -1,8 +1,7 @@
 import auth from "./auth";
 
-
-const api = {
+const gateway = {
     auth
 };
 
-export default api;
+export default gateway;

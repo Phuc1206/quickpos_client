@@ -3,30 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import images from "@/assets/images";
-import api from "@/core/axiosConfig";
-import { apiStrings } from "@/services";
-import { setAccessToken } from "@/services/token";
-import { useAuthStore } from "@/zustand/authStore";
+import { useLogin } from "@/services/authServices";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const { mutateAsync: loginMutation, isPending: isLoginPending } = useLogin();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setIsLoading(true);
-
-		const res = await api.post(`${apiStrings.auth.login}`, {
-			username: email,
-			password,
-		});
-
-		const { accessToken, user } = res.data;
-		setAccessToken(accessToken);
-		useAuthStore.getState().setUser(user);
-		setIsLoading(false);
+		await loginMutation({ username: email, password: password });
 	};
 
 	return (
@@ -92,10 +79,10 @@ export default function LoginPage() {
 						{/* BUTTON */}
 						<Button
 							type="submit"
-							disabled={isLoading}
+							disabled={isLoginPending}
 							className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90"
 						>
-							{isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+							{isLoginPending ? "Đang đăng nhập..." : "Đăng nhập"}
 						</Button>
 					</form>
 				</div>
