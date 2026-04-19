@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/spinner";
 import * as React from "react";
 import { useNavigate } from "react-router";
 export interface INavigatePageProps {
@@ -11,5 +12,5 @@ export default function NavigatePage(props: INavigatePageProps) {
         navigate(props.to, { replace: false });
     }, [props.to, navigate]);
 
-    return <>Đang tải trang</>; //<Loading />
+    return <Spinner />;
 }

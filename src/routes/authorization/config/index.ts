@@ -1,7 +1,11 @@
 import { icons } from "@/assets/icons";
 import { SLUG_NAME } from "@/constants/slugName";
+import CustomerPage from "@/pages/Customer";
+import EmployeePage from "@/pages/Employee";
+import InvoicePage from "@/pages/Invoice";
+import OrderPage from "@/pages/Order";
+import ProductPage from "@/pages/Product";
 import type { TNavigateItemConfig } from "@/types/routesType";
-import React from "react";
 
 export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
     [SLUG_NAME.FEATURE.PRODUCT]: {
@@ -9,7 +13,7 @@ export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
         slug: SLUG_NAME.FEATURE.PRODUCT,
         title: "Món ăn",
         icon: icons.Cookie,
-        PageComponent: () => React.createElement("div", null, "Món ăn")
+        PageComponent: ProductPage
     },
 
     [SLUG_NAME.FEATURE.EMPLOYEE]: {
@@ -17,7 +21,7 @@ export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
         slug: SLUG_NAME.FEATURE.EMPLOYEE,
         title: "Nhân viên",
         icon: icons.IdCardLanyard,
-        PageComponent: () => React.createElement("div", null, "Nhân viên")
+        PageComponent: EmployeePage
     },
 
     [SLUG_NAME.FEATURE.CUSTOMER]: {
@@ -25,7 +29,7 @@ export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
         slug: SLUG_NAME.FEATURE.CUSTOMER,
         title: "Khách hàng",
         icon: icons.Users,
-        PageComponent: () => React.createElement("div", null, "Khách hàng")
+        PageComponent: CustomerPage
     },
 
     [SLUG_NAME.FEATURE.INVOICE]: {
@@ -33,7 +37,7 @@ export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
         slug: SLUG_NAME.FEATURE.INVOICE,
         title: "Hóa đơn",
         icon: icons.Receipt,
-        PageComponent: () => React.createElement("div", null, "Hóa đơn")
+        PageComponent: InvoicePage
     },
 
     [SLUG_NAME.FEATURE.ORDER]: {
@@ -41,6 +45,6 @@ export const ROUTE_REGISTRY: Record<string, TNavigateItemConfig> = {
         slug: SLUG_NAME.FEATURE.ORDER,
         title: "Bán hàng",
         icon: icons.Cookie,
-        PageComponent: () => React.createElement("div", null, "Bán hàng")
+        PageComponent: OrderPage
     }
 };
