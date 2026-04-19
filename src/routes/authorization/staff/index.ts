@@ -5,9 +5,7 @@ import { SLUG_NAME } from "@/constants/slugName";
 const staff: TNavigationConfig = {
     IndexPageComponent: () => { },
     children: [
-        ROUTE_REGISTRY[SLUG_NAME.FEATURE.ORDER],
-        ROUTE_REGISTRY[SLUG_NAME.FEATURE.CUSTOMER],
-        ROUTE_REGISTRY[SLUG_NAME.FEATURE.PRODUCT],
+        ROUTE_REGISTRY[SLUG_NAME.FEATURE.ORDER]
     ]
 };
 export default staff;

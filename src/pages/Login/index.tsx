@@ -36,7 +36,7 @@ export default function LoginPage() {
 				<img
 					src={images.background}
 					alt="background"
-					className="w-full h-full object-cover scale-85 animate-float"
+					className="w-full h-full object-cover scale-70 animate-float"
 				/>
 			</div>
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
 					</h1>
 
 					{/* FORM */}
-					<form onSubmit={handleSubmit} className="space-y-4 mt-6">
+					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* EMAIL */}
 						<div className="flex flex-col gap-2">
 							<label className="text-sm font-medium">Tên đăng nhập</label>
