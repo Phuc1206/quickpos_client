@@ -5,6 +5,8 @@ import { Eye, EyeOff } from "lucide-react";
 import images from "@/assets/images";
 import api from "@/core/axiosConfig";
 import { apiStrings } from "@/services";
+import { setAccessToken } from "@/services/token";
+import { useAuthStore } from "@/zustand/authStore";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -21,8 +23,9 @@ export default function LoginPage() {
 			password,
 		});
 
-		console.log("Đăng nhập:", { username: email, password });
-		console.log(res.data);
+		const { accessToken, user } = res.data;
+		setAccessToken(accessToken);
+		useAuthStore.getState().setUser(user);
 		setIsLoading(false);
 	};
 

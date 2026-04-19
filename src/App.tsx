@@ -1,11 +1,11 @@
 import { QueryClientProvider } from "@/services";
 import "./App.css";
-import LoginPage from "./pages/Login";
+import PageSelector from "@/routes";
 
 function App() {
 	return (
 		<QueryClientProvider>
-			<LoginPage />
+			<PageSelector />
 		</QueryClientProvider>
 	);
 }
