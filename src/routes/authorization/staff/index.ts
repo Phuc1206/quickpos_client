@@ -6,7 +6,7 @@ import DefaultLayout from "@/components/layout/default";
 const staff: TNavigationConfig = {
     IndexPageComponent: DefaultLayout,
     children: [
-        ROUTE_REGISTRY[SLUG_NAME.FEATURE.DASHBOARD],
+        // ROUTE_REGISTRY[SLUG_NAME.FEATURE.DASHBOARD],
         ROUTE_REGISTRY[SLUG_NAME.FEATURE.ORDER]
     ]
 };

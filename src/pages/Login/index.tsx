@@ -121,7 +121,7 @@ export default function LoginPage() {
 						>
 							{isLoginPending ?
 								<div className="flex items-center justify-center gap-2">
-									<Spinner data-icon="inline-start" />
+									<Spinner data-icon="inline-start" className="text-background" />
 									<span>Đang đăng nhập...</span>
 								</div>
 

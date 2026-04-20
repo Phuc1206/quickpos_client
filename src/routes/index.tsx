@@ -5,6 +5,8 @@ import { generateRoutes } from "./navigationRoute";
 import NavigatePage from "./navigationPage";
 import { SLUG_NAME } from "@/constants/slugName";
 import LoginPage from "@/pages/Login";
+import { getDefaultPageByRole } from "./navigationSelector";
+import type { TRole } from "@/constants/permission";
 
 export default function PageSelector() {
 	const { isInitializing, user, navigationConfig } = useInitAuth();
@@ -24,9 +26,9 @@ export default function PageSelector() {
 	// Luồng cho người dùng đã đăng nhập
 	return (
 		<Routes>
-			<Route path="/" element={<NavigatePage to={SLUG_NAME.FEATURE.DASHBOARD} />} />
+			<Route path="/" element={<NavigatePage to={getDefaultPageByRole(user.level as TRole)} />} />
 			{generateRoutes({ config: navigationConfig })}
-			<Route path="*" element={<NavigatePage to={SLUG_NAME.FEATURE.DASHBOARD} />} />
+			<Route path="*" element={<NavigatePage to={getDefaultPageByRole(user.level as TRole)} />} />
 		</Routes>
 	);
 }

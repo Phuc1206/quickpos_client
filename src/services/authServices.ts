@@ -6,8 +6,8 @@ import { useNavigate } from "react-router";
 import { clearAccessToken, setAccessToken } from "@/services/token";
 import { toast } from "sonner";
 import { SLUG_NAME } from "@/constants/slugName";
-import navigationSelector from "@/routes/navigationSelector";
 import type { TRole } from "@/constants/permission";
+import { getDefaultPageByRole, navigationSelector } from "@/routes/navigationSelector";
 
 
 export const useLogin = () => {
@@ -16,14 +16,13 @@ export const useLogin = () => {
 
     return useMutation({
         mutationFn: (payload: ILoginPayload) => gateway.auth.sendLoginRequest(payload),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             const { accessToken, user } = data?.data?.data || {};
             setAccessToken(accessToken);
             setUser(user);
 
-            navigationSelector(user.level as TRole).then(config => {
-                setNavigationConfig(config);
-            });
+            const config = await navigationSelector(user.level as TRole);
+            setNavigationConfig(config);
 
             // Hiển thị toast trước
             toast.success(data?.data?.message || "Đăng nhập thành công", {
@@ -31,7 +30,7 @@ export const useLogin = () => {
             });
 
             // Sau đó mới chuyển trang
-            navigate(SLUG_NAME.FEATURE.DASHBOARD);
+            navigate(getDefaultPageByRole(user.level as TRole));
         },
         onError: (error) => {
             console.log("Login error:", error);
@@ -71,13 +70,12 @@ export const useRefreshToken = () => {
 
     return useMutation({
         mutationFn: () => gateway.auth.sendRefreshTokenRequest(),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             const { accessToken, user } = data?.data || {};
             setAccessToken(accessToken);
             setUser(user);
-            navigationSelector(user.level as TRole).then(config => {
-                setNavigationConfig(config);
-            });
+            const config = await navigationSelector(user.level as TRole);
+            setNavigationConfig(config);
         },
         onError: (error) => {
             console.log("Refresh token error:", error);

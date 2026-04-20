@@ -1,7 +1,8 @@
 import { ROLES, type TRole } from "@/constants/permission";
 import navigationConfig from "../authorization";
+import { SLUG_NAME } from "@/constants/slugName";
 
-const navigationSelector = async (userRole: TRole) => {
+export const navigationSelector = async (userRole: TRole) => {
     switch (userRole) {
         case ROLES.ADMIN:
             return navigationConfig.administration;
@@ -10,7 +11,16 @@ const navigationSelector = async (userRole: TRole) => {
         default:
             throw new Error("Invalid user role");
     }
-
 }
 
-export default navigationSelector;
+export const getDefaultPageByRole = (role: TRole) => {
+    switch (role) {
+        case ROLES.ADMIN:
+            return SLUG_NAME.FEATURE.PRODUCT;
+        case ROLES.STAFF:
+            return SLUG_NAME.FEATURE.ORDER;
+        default:
+            return SLUG_NAME.FEATURE.DASHBOARD;
+    }
+};
+

@@ -1,9 +1,10 @@
 import { SLUG_NAME } from "@/constants/slugName";
 import type { TNavigationConfig } from "@/types/routesType";
 import { ROUTE_REGISTRY } from "../config";
+import DefaultLayout from "@/components/layout/default";
 
 const administration: TNavigationConfig = {
-    IndexPageComponent: () => { },
+    IndexPageComponent: DefaultLayout,
     children: [
         ROUTE_REGISTRY[SLUG_NAME.FEATURE.DASHBOARD],
         ROUTE_REGISTRY[SLUG_NAME.FEATURE.PRODUCT],
