@@ -1,48 +1,18 @@
-import * as React from "react";
-import { Routes, Route } from "react-router";
-import { useAuthStore } from "@/zustand/authStore";
+import Loading from "@/components/section/loading";
+import { useInitAuth } from "@/hooks/useInitAuth";
+import { Route, Routes } from "react-router";
 import { generateRoutes } from "./navigationRoute";
 import NavigatePage from "./navigationPage";
-import LoginPage from "@/pages/Login";
-import type { TNavigationConfig } from "@/types/routesType";
-import type { TRole } from "@/constants/permission";
-import navigationSelector from "./navigationSelector";
 import { SLUG_NAME } from "@/constants/slugName";
+import LoginPage from "@/pages/Login";
 
 export default function PageSelector() {
-	const user = useAuthStore((state) => state.user);
-	// const userLocalStorage = localStorage.getItem("user");
-	// const user = userAuth || (userLocalStorage ? JSON.parse(userLocalStorage) : null);
+	const { isInitializing, user, navigationConfig } = useInitAuth();
 
-	const [navigationConfig, setNavigationConfig] = React.useState<TNavigationConfig | undefined>(undefined);
-	const [isInitializing, setIsInitializing] = React.useState(true);
+	if (isInitializing) return <Loading.FullScreen />;
 
-	React.useLayoutEffect(() => {
-		const fetchConfig = async () => {
-			setIsInitializing(true);
-
-			if (!user) {
-				setNavigationConfig(undefined);
-				setIsInitializing(false);
-				return;
-			}
-
-			const role = (user?.level) as TRole;
-
-			const config = await navigationSelector(role);
-			setNavigationConfig(config);
-			setIsInitializing(false);
-		};
-
-		fetchConfig();
-	}, [user]);
-
-	if (isInitializing) {
-		return <>Đang tải trang...</>;
-	}
-
-
-	if (!user || (!navigationConfig && !isInitializing)) {
+	// Luồng cho người dùng chưa đăng nhập
+	if (!user || !navigationConfig) {
 		return (
 			<Routes>
 				<Route path={SLUG_NAME.AUTH.LOGIN} element={<LoginPage />} />
@@ -51,12 +21,11 @@ export default function PageSelector() {
 		);
 	}
 
+	// Luồng cho người dùng đã đăng nhập
 	return (
 		<Routes>
 			<Route path="/" element={<NavigatePage to={SLUG_NAME.FEATURE.DASHBOARD} />} />
-
 			{generateRoutes({ config: navigationConfig })}
-
 			<Route path="*" element={<NavigatePage to={SLUG_NAME.FEATURE.DASHBOARD} />} />
 		</Routes>
 	);

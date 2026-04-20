@@ -1,3 +1,4 @@
+import type { TNavigationConfig } from "@/types/routesType";
 import { create } from "zustand";
 
 interface User {
@@ -11,6 +12,8 @@ interface AuthState {
 	user: User | null;
 	setUser: (user: User | null) => void;
 	logout: () => void;
+	navigationConfig: TNavigationConfig | undefined;
+	setNavigationConfig: (config: TNavigationConfig | undefined) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -19,4 +22,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 	setUser: (user) => set({ user }),
 
 	logout: () => set({ user: null }),
+
+	navigationConfig: undefined,
+
+	setNavigationConfig: (config) => set({ navigationConfig: config })
 }));

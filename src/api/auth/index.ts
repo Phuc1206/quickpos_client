@@ -25,9 +25,21 @@ const sendLogoutRequest = async () => {
     }
 }
 
+const sendRefreshTokenRequest = async () => {
+    try {
+        const response = await api.post(apiStrings.auth.refreshToken);
+        // console.log("Refresh token request api:", response);
+        return response;
+    } catch (error) {
+        console.error("Refresh token request failed:", error);
+        throw error;
+    }
+}
+
 const auth = {
     sendLoginRequest,
-    sendLogoutRequest
+    sendLogoutRequest,
+    sendRefreshTokenRequest
 };
 
 export default auth;

@@ -1,4 +1,4 @@
-import { Spinner } from "@/components/ui/spinner";
+import Loading from "@/components/section/loading";
 import * as React from "react";
 import { useNavigate } from "react-router";
 export interface INavigatePageProps {
@@ -12,5 +12,5 @@ export default function NavigatePage(props: INavigatePageProps) {
         navigate(props.to, { replace: false });
     }, [props.to, navigate]);
 
-    return <Spinner />;
+    return <Loading.FullScreen />;
 }
