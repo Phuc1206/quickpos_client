@@ -12,6 +12,7 @@
     --popover-foreground: oklch(0.18 0 0);
     --primary: oklch(0.65 0.18 45);
     --primary-foreground: oklch(0.98 0 0);
+    --primary-hover: oklch(0.65 0.18 45 / 0.8);
     --secondary: oklch(0.95 0.02 45);
     --secondary-foreground: oklch(0.65 0.18 45);
     --muted: oklch(0.92 0 0);
@@ -39,7 +40,7 @@
     --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+/* .dark {
     --background: oklch(0.12 0 0);
     --foreground: oklch(0.95 0 0);
     --card: oklch(0.18 0 0);
@@ -72,7 +73,7 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
-}
+} */
 
 @theme inline {
     --font-sans: 'Geist', 'Geist Fallback';
@@ -85,6 +86,7 @@
     --color-popover-foreground: var(--popover-foreground);
     --color-primary: var(--primary);
     --color-primary-foreground: var(--primary-foreground);
+    --color-primary-hover: var(--primary-hover);
     --color-secondary: var(--secondary);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-muted: var(--muted);
@@ -119,4 +121,8 @@
     body {
         @apply m-0;
     }
+}
+
+* {
+    color-scheme: light !important;
 }

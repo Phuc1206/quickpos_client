@@ -24,12 +24,10 @@ export const useLogin = () => {
             const config = await navigationSelector(user.level as TRole);
             setNavigationConfig(config);
 
-            // Hiển thị toast trước
             toast.success(data?.data?.message || "Đăng nhập thành công", {
                 description: "Chào mừng bạn quay trở lại."
             });
 
-            // Sau đó mới chuyển trang
             navigate(getDefaultPageByRole(user.level as TRole));
         },
         onError: (error) => {
