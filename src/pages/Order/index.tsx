@@ -1,15 +1,16 @@
 import { MenuSelector } from "@/components/section/order/menuSelector";
 import { OrderItem } from "@/components/section/order/orderItem";
+import useDebounce from "@/hooks/useDebounce";
 import { useGetProductList } from "@/services/productServices";
 import { type Order } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 
 const OrderPage = () => {
     const { searchQuery, currentOrder, addCurrentOrder } = useOrderStore();
-    const { productsList } = useGetProductList({
+    const { productsList, isLoading: isProductsLoading } = useGetProductList({
         page: 1,
         rows: 10,
-        search: searchQuery,
+        search: useDebounce(searchQuery, 1000),
     });
 
     return (

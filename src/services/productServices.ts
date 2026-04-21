@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetProductList = (payload: IPagination) => {
     const query = useQuery({
-        queryKey: ["get-products-list", payload?.page, payload?.rows],
+        queryKey: ["get-products-list", payload?.page, payload?.rows, payload?.search],
         queryFn: async () => {
             try {
                 const res = await gateway.product.sendProductListRequest(payload);
