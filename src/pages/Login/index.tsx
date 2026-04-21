@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@/components/ui/spinner";
+import { NAME_SYSTEM } from "@/constants/permission";
 
 const loginSchema = z.object({
 	username: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
@@ -53,7 +54,7 @@ export default function LoginPage() {
 				<div className="w-full max-w-md bg-background rounded-md p-12 shadow-lg">
 					{/* HEADER */}
 					<h1 className="text-3xl font-bold text-primary! text-center">
-						Quickpops
+						{NAME_SYSTEM}
 					</h1>
 
 					{/* FORM */}

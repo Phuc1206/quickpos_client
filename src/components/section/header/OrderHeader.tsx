@@ -8,6 +8,7 @@ import { useOrderStore } from '@/zustand/orderStore'
 import { DraftModal } from '../order/draftModal'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { ResearchBillModal } from '../order/researchBillModal'
+import { NAME_SYSTEM } from '@/constants/permission'
 
 export default function OrderHeader() {
     const user = useAuthStore((state) => state.user);
@@ -30,10 +31,10 @@ export default function OrderHeader() {
 
                 <div className="flex items-center shrink-0">
                     <div className="flex flex-col">
-                        <span className="text-[10px] md:text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                        {/* <span className="text-[10px] md:text-xs font-semibold text-gray-600 uppercase tracking-wide">
                             Mã đơn hàng
-                        </span>
-                        <span className="text-lg md:text-2xl font-bold text-primary">DH533793</span>
+                        </span> */}
+                        <span className="text-lg md:text-2xl font-bold text-primary uppercase">{NAME_SYSTEM}</span>
                     </div>
                 </div>
 

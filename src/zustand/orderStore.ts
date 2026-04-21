@@ -1,6 +1,6 @@
 
 
-import { OrderStatus, type Order, type OrderForm, type OrderStatusType } from "@/types/order";
+import { OrderStatus, type Order, type OrderForm, type OrderStatusType, type PaymentModeType } from "@/types/order";
 import { create } from "zustand";
 
 interface OrderState {
@@ -15,6 +15,7 @@ interface OrderState {
     //management order form
     orderForm: OrderForm | null;
     setOrderForm: (orderForm: OrderForm) => void;
+    updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => void;
 
     // management draft order
     draftOrders: OrderForm[];
@@ -50,6 +51,9 @@ export const useOrderStore = create<OrderState>((set) => ({
     // management order form
     orderForm: null,
     setOrderForm: (orderForm: OrderForm) => set({ orderForm }),
+    updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => set((state) => ({
+        orderForm: state.orderForm ? { ...state.orderForm, paymentMethod } : null,
+    })),
 
     // management draft order
     draftOrders: [],
@@ -57,7 +61,7 @@ export const useOrderStore = create<OrderState>((set) => ({
         draftOrders: [...state.draftOrders, order],
     })),
     removeDraftOrderById: (orderId: string) => set((state) => ({
-        draftOrders: state.draftOrders.filter(order => order._id !== orderId),
+        draftOrders: state.draftOrders.filter(order => order.code !== orderId),
     })),
 
     //search product

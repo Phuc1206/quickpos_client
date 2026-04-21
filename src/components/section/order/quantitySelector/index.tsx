@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Minus, Plus, Trash2, X } from 'lucide-react';
@@ -6,7 +5,7 @@ import { Minus, Plus, Trash2, X } from 'lucide-react';
 interface QuantitySelectorProps {
     name: string;
     price: number;
-    initialQuantity?: number;
+    quantity?: number;
     onQuantityChange?: (newQuantity: number) => void;
     onDelete?: () => void;
 }
@@ -14,15 +13,13 @@ interface QuantitySelectorProps {
 function QuantitySelector({
     name,
     price = 0,
-    initialQuantity = 1,
+    quantity = 1,
     onQuantityChange,
     onDelete,
 }: QuantitySelectorProps) {
-    const [quantity, setQuantity] = useState(initialQuantity);
     const totalPrice = price * quantity;
     const handleQuantityChange = (newQuantity: number) => {
         if (newQuantity > 0) {
-            setQuantity(newQuantity);
             onQuantityChange?.(newQuantity);
         }
     };
@@ -33,7 +30,7 @@ function QuantitySelector({
             <div className="flex items-center justify-between">
                 {/* Product Info */}
                 <section className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-600 uppercase">{name}</p>
+                    <p className="text-xs font-semibold text-gray-600">{name}</p>
                     <p className="text-xs text-gray-500">
                         {price.toLocaleString('vi-VN')} đ
                     </p>
@@ -93,23 +90,22 @@ function QuantitySelector({
 const QuantitySelectorTablet = ({
     name,
     price,
-    initialQuantity = 1,
+    quantity = 1,
     onQuantityChange,
     onDelete,
 }: QuantitySelectorProps) => {
-    const [quantity, setQuantity] = useState(initialQuantity);
     const totalPrice = price * quantity;
+
     const handleQuantityChange = (newQuantity: number) => {
         if (newQuantity > 0) {
-            setQuantity(newQuantity);
             onQuantityChange?.(newQuantity);
         }
     };
 
     return (
-        <div className="w-full bg-gray-50 rounded-lg border border-gray-200 p-4">
+        <div className="w-full h-28 bg-gray-50 rounded-lg border border-gray-200 px-4 space-y-2">
             {/* Header with name and close button */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between h-8">
                 <h3 className="text-sm font-semibold text-gray-900">{name}</h3>
                 <Button
                     variant="ghost"
@@ -123,7 +119,7 @@ const QuantitySelectorTablet = ({
 
             {/* Main content row */}
             {/* Quantity controls */}
-            <div className="flex flex-1 items-center justify-between gap-2 border border-gray-200 rounded-lg px-3 py-2">
+            <div className="flex flex-1 h-8 items-center justify-between gap-2 border border-gray-200 rounded-md">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -152,11 +148,11 @@ const QuantitySelectorTablet = ({
             </div>
 
             {/* Footer with unit price × quantity and total */}
-            <div className="flex items-center justify-between mt-3 text-sm">
+            <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">
                     {price.toLocaleString('vi-VN')} đ × {quantity}
                 </span>
-                <span className="font-semibold text-amber-500">
+                <span className="font-semibold text-primary">
                     {totalPrice.toLocaleString('vi-VN')} đ
                 </span>
             </div>

@@ -9,7 +9,12 @@ export const OrderStatus = {
 
 export type OrderStatusType = (typeof OrderStatus)[keyof typeof OrderStatus];
 
+export const PaymentMode = {
+    CASH: 'CASH',
+    CARD: 'CARD',
+} as const;
 
+export type PaymentModeType = (typeof PaymentMode)[keyof typeof PaymentMode];
 export interface Order {
     _id: string;
     name: string;
@@ -18,11 +23,15 @@ export interface Order {
 }
 
 export interface OrderForm {
-    _id: string;
     code: string;
     timeOrder: Date;
     orders: Order[];
-    totalPrice: number;
+    totalPrice: number; // Tổng thanh toán
     status: OrderStatusType;
-    note: string;
+    note?: string;
+    paymentMethod?: PaymentModeType;
+    totalPriceChange?: number; // Tổng tiền đã được thay đổi (nếu có)
+    customer?: string;
+    customerMoney?: number; // Số tiền khách đưa
+    surplusMoney?: number; // Số tiền thừa trả khách
 }

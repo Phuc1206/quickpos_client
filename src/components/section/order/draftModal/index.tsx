@@ -26,15 +26,15 @@ export function DraftModal() {
                     <ul className="space-y-2">
                         {draftOrders.map((order) => (
                             <DraftItem
-                                key={order._id}
+                                key={order.code}
                                 name={order.note}
                                 itemCount={order.orders.length}
                                 totalPrice={order.totalPrice}
                                 timestamp={order.timeOrder}
-                                onDelete={() => removeDraftOrderById(order._id)}
+                                onDelete={() => removeDraftOrderById(order.code)}
                                 onResume={() => {
                                     addListCurrentOrder(order?.orders || []);
-                                    removeDraftOrderById(order._id);
+                                    removeDraftOrderById(order.code);
                                 }}
                             />
                         ))}
