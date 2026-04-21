@@ -5,10 +5,13 @@ import { useAuthStore } from '@/zustand/authStore'
 import { useLogout } from '@/services/authServices'
 import { Spinner } from '@/components/ui/spinner'
 import { useOrderStore } from '@/zustand/orderStore'
+import { DraftModal } from '../order/draftModal'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { ResearchBillModal } from '../order/researchBillModal'
 
 export default function OrderHeader() {
     const user = useAuthStore((state) => state.user);
-    const { searchQuery, setSearchQuery } = useOrderStore();
+    const { searchQuery, setSearchQuery, draftOrders } = useOrderStore();
     const { mutateAsync: logoutMutation, isPending: isLoggingOut } = useLogout();
 
     const handleLogout = async () => {
@@ -37,27 +40,38 @@ export default function OrderHeader() {
                 <div className="flex items-center gap-3 md:gap-6 flex-1 justify-end ml-4">
 
                     <section className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            className="relative gap-2 h-10 border-gray-300 hover:bg-primary-hover hover:text-white px-3"
-                        >
-                            <NotepadText className="h-4 w-4 shrink-0" />
-                            <p className="hidden lg:inline text-sm">Đơn tạm</p>
-                            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm border-2 border-white">
-                                5
-                            </span>
-                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="relative gap-2 h-10 border-gray-300 hover:bg-primary-hover hover:text-white px-3"
+                                >
+                                    <NotepadText className="h-4 w-4 shrink-0" />
+                                    <p className="hidden lg:inline text-sm">Đơn tạm</p>
+                                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm border-2 border-white">
+                                        {draftOrders.length}
+                                    </span>
+                                </Button>
+                            </DialogTrigger>
 
-                        <Button
-                            variant="outline"
-                            className="relative gap-2 h-10 border-gray-300 hover:bg-primary-hover hover:text-white px-3"
-                        >
-                            <Receipt className="h-4 w-4 shrink-0" />
-                            <p className="hidden lg:inline text-sm">Tra cứu bill</p>
-                            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm border-2 border-white">
-                                12
-                            </span>
-                        </Button>
+                            <DraftModal />
+                        </Dialog>
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="relative gap-2 h-10 border-gray-300 hover:bg-primary-hover hover:text-white px-3"
+                                >
+                                    <Receipt />
+                                    <p className="hidden lg:inline">Tra cứu bill</p>
+                                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm border-2 border-white">
+                                        0
+                                    </span>
+                                </Button>
+                            </DialogTrigger>
+                            <ResearchBillModal />
+                        </Dialog>
                     </section>
 
                     <div className="max-w-37.5 md:max-w-xs flex-1">

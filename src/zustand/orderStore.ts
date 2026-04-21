@@ -7,6 +7,7 @@ interface OrderState {
     // management current order
     currentOrder: Order[] | null;
     addCurrentOrder: (order: Order) => void;
+    addListCurrentOrder: (orders: Order[]) => void;
     removeCurrentOrderById: (productId: string) => void;
     removeAllCurrentOrder: () => void;
     updateQuantityCurrentOrder: (orderId: string, quantity: number) => void;
@@ -17,6 +18,8 @@ interface OrderState {
 
     // management draft order
     draftOrders: OrderForm[];
+    addDraftOrder: (order: OrderForm) => void;
+    removeDraftOrderById: (orderId: string) => void;
 
     //search product
     searchQuery: string;
@@ -28,9 +31,13 @@ interface OrderState {
 }
 
 export const useOrderStore = create<OrderState>((set) => ({
+    // management current order
     currentOrder: null,
     addCurrentOrder: (order: Order) => set((state) => ({
         currentOrder: state.currentOrder ? [...state.currentOrder, order] : [order],
+    })),
+    addListCurrentOrder: (orders: Order[]) => set((state) => ({
+        currentOrder: state.currentOrder ? [...state.currentOrder, ...orders] : orders,
     })),
     removeCurrentOrderById: (productId: string) => set((state) => ({
         currentOrder: state.currentOrder ? state.currentOrder.filter(order => order._id !== productId) : null,
@@ -40,14 +47,24 @@ export const useOrderStore = create<OrderState>((set) => ({
         currentOrder: state.currentOrder ? state.currentOrder.map(order => order._id === orderId ? { ...order, quantity } : order) : null,
     })),
 
+    // management order form
     orderForm: null,
     setOrderForm: (orderForm: OrderForm) => set({ orderForm }),
 
+    // management draft order
     draftOrders: [],
+    addDraftOrder: (order: OrderForm) => set((state) => ({
+        draftOrders: [...state.draftOrders, order],
+    })),
+    removeDraftOrderById: (orderId: string) => set((state) => ({
+        draftOrders: state.draftOrders.filter(order => order._id !== orderId),
+    })),
 
+    //search product
     searchQuery: "",
     setSearchQuery: (query: string) => set({ searchQuery: query }),
 
+    //status order
     statusOrder: OrderStatus.ORDER,
     setStatusOrder: (status: OrderStatusType) => set({ statusOrder: status }),
 }));

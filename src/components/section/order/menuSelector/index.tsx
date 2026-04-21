@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus } from 'lucide-react';
-import { OrderStatus } from '@/types/order';
+import { OrderStatus, type OrderForm } from '@/types/order';
 import { ReceiptText } from 'lucide-react';
 import QuantitySelector from '../quantitySelector';
 import { useOrderStore } from '@/zustand/orderStore';
@@ -14,7 +14,8 @@ export function MenuSelector() {
         removeAllCurrentOrder,
         updateQuantityCurrentOrder,
         statusOrder,
-        setStatusOrder
+        setStatusOrder,
+        addDraftOrder
     } = useOrderStore();
 
     const [draftNote, setDraftNote] = useState('');
@@ -23,7 +24,7 @@ export function MenuSelector() {
 
     return (
         // 1. Thêm flex flex-col và h-full ở đây
-        <div className="w-full h-full bg-amber-300 flex flex-col gap-4 p-2">
+        <div className="w-full h-full flex flex-col gap-4 p-2">
 
             {/* 2. Phần Menu: dùng flex-1 để chiếm không gian trống và cho phép scroll */}
             <section className="min-h-65 max-h-65 overflow-auto">
@@ -93,7 +94,24 @@ export function MenuSelector() {
                             className="border-gray-300 rounded-md h-10"
                         />
                         <div className="flex gap-3">
-                            <Button variant="outline" className="flex-1 gap-2 lg:h-10 md:h-8 border-gray-300">
+                            <Button variant="outline" className="flex-1 gap-2 lg:h-10 md:h-8 border-gray-300"
+                                onClick={() => {
+                                    if (currentOrder) {
+                                        const newDraft: OrderForm = {
+                                            _id: `draft-${Date.now()}`,
+                                            code: `DRAFT-${Date.now()}`,
+                                            timeOrder: new Date(),
+                                            totalPrice: totalPrice,
+                                            status: OrderStatus.DRAFT,
+                                            orders: currentOrder,
+                                            note: draftNote || "Không có ghi chú"
+                                        };
+                                        addDraftOrder(newDraft);
+                                        removeAllCurrentOrder();
+                                        setDraftNote("");
+                                    }
+                                }}
+                            >
                                 <Plus className="h-4 w-4" /> Lưu tạm
                             </Button>
                             <Button
