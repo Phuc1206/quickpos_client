@@ -4,9 +4,11 @@ import { Input } from '@/components/ui/input'
 import { useAuthStore } from '@/zustand/authStore'
 import { useLogout } from '@/services/authServices'
 import { Spinner } from '@/components/ui/spinner'
+import { useOrderStore } from '@/zustand/orderStore'
 
 export default function OrderHeader() {
     const user = useAuthStore((state) => state.user);
+    const { searchQuery, setSearchQuery } = useOrderStore();
     const { mutateAsync: logoutMutation, isPending: isLoggingOut } = useLogout();
 
     const handleLogout = async () => {
@@ -71,6 +73,8 @@ export default function OrderHeader() {
                                 type="text"
                                 placeholder="Tìm món ăn..."
                                 className="pl-9 h-10 rounded-lg border-gray-300 bg-gray-50 text-sm"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                     </div>

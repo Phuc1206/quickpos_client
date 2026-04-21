@@ -1,7 +1,9 @@
 import auth from "./auth";
+import product from "./product";
 
 const gateway = {
-    auth
+    auth,
+    product
 };
 
 export default gateway;

@@ -34,7 +34,7 @@ export function DraftItem({
     };
 
     return (
-        <div className="w-full bg-white rounded-lg border border-gray-200 p-4">
+        <div className="w-full bg-white rounded-lg border border-gray-200 p-4 hover:border-primary">
             <div className="flex items-center justify-between gap-4">
                 {/* Left Section - Info */}
                 <div className="flex-1 flex flex-col gap-1">

@@ -4,12 +4,11 @@ interface OrderItemProps {
     name: string;
     price: number;
     image?: string;
-    quantity?: number;
     isSelected?: boolean;
     onClick?: () => void;
 }
 
-export function OrderItem({ name, price, image, quantity = 0, isSelected, onClick }: OrderItemProps) {
+export function OrderItem({ name, price, image, isSelected, onClick }: OrderItemProps) {
     return (
         <div
             onClick={onClick}
@@ -21,11 +20,11 @@ export function OrderItem({ name, price, image, quantity = 0, isSelected, onClic
                 }
             `}
         >
-            {quantity > 0 && (
+            {/* {quantity > 0 && (
                 <div className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-lg animate-in zoom-in">
                     {quantity}
                 </div>
-            )}
+            )} */}
 
             <div className={`w-full aspect-square flex items-center justify-center transition-colors ${isSelected ? "bg-amber-100" : "bg-amber-50"}`}>
                 {image ? (
@@ -36,7 +35,7 @@ export function OrderItem({ name, price, image, quantity = 0, isSelected, onClic
             </div>
 
             <div className="p-4 bg-white">
-                <h3 className="text-base font-semibold text-foreground mb-1 line-clamp-1">{name}</h3>
+                <h3 className="text-base font-semibold text-foreground mb-1">{name}</h3>
                 <p className={`text-lg font-bold text-primary`}>
                     {price.toLocaleString('vi-VN')} đ
                 </p>
