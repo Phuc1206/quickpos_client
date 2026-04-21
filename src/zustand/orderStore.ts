@@ -1,6 +1,6 @@
 
 
-import type { Order, OrderForm } from "@/types/order";
+import { OrderStatus, type Order, type OrderForm, type OrderStatusType } from "@/types/order";
 import { create } from "zustand";
 
 interface OrderState {
@@ -21,6 +21,10 @@ interface OrderState {
     //search product
     searchQuery: string;
     setSearchQuery: (query: string) => void;
+
+    //status order
+    statusOrder: OrderStatusType;
+    setStatusOrder: (status: OrderStatusType) => void;
 }
 
 export const useOrderStore = create<OrderState>((set) => ({
@@ -43,4 +47,7 @@ export const useOrderStore = create<OrderState>((set) => ({
 
     searchQuery: "",
     setSearchQuery: (query: string) => set({ searchQuery: query }),
+
+    statusOrder: OrderStatus.ORDER,
+    setStatusOrder: (status: OrderStatusType) => set({ statusOrder: status }),
 }));

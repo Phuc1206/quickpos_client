@@ -28,7 +28,7 @@ function QuantitySelector({
     };
 
     return (
-        <div className="w-full rounded-lg border border-gray-300 p-4 space-y-3">
+        <div className="w-full rounded-lg border border-gray-300 p-4 space-y-3 bg-gray-50">
             {/* Main Item Row */}
             <div className="flex items-center justify-between">
                 {/* Product Info */}
@@ -107,7 +107,7 @@ const QuantitySelectorTablet = ({
     };
 
     return (
-        <div className="w-full bg-white rounded-lg border border-gray-200 p-4">
+        <div className="w-full bg-gray-50 rounded-lg border border-gray-200 p-4">
             {/* Header with name and close button */}
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-gray-900">{name}</h3>
