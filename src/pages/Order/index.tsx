@@ -17,7 +17,7 @@ const OrderPage = () => {
     });
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 p-6 gap-4">
+        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-12 lg:grid-cols-12">
             <section className="md:col-span-4 lg:col-span-3">
                 <MenuSelector />
             </section>
@@ -34,11 +34,11 @@ const OrderPage = () => {
                             className="h-full overflow-auto"
                         >
                             {isProductsLoading ? (
-                                <div className="w-full h-full flex items-center justify-center">
+                                <div className="flex items-center justify-center w-full h-full">
                                     <Spinner className="size-12" />
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+                                <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-5">
                                     {productsList?.map((product) => (
                                         <OrderItem
                                             key={product._id}

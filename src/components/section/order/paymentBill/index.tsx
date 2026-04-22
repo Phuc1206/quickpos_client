@@ -3,8 +3,7 @@ import { cn } from "@/lib/utils";
 import { UserPlus, Printer, Check } from "lucide-react";
 import { PaymentMode, type PaymentModeType } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
-
-const formatVND = (value: number) => value.toLocaleString("vi-VN");
+import { formatVND } from "@/utils";
 
 interface PaymentBillProps {
     mode: PaymentModeType;
@@ -30,7 +29,7 @@ export default function PaymentBill({
     const change = customerPaid - totalAmount;
 
     return (
-        <div className="bg-white border-gray-100 flex flex-col p-5 gap-4">
+        <div className="bg-white border-gray-100 flex flex-col gap-4">
             {/* Total */}
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                 <p className="text-xs text-gray-400 mb-1">Tổng thanh toán</p>

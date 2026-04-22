@@ -19,15 +19,15 @@ export function DraftModal() {
                 </DialogDescription>
             </DialogHeader>
 
-            <div className="py-4 max-h-[60vh] overflow-y-auto">
+            <div className="max-h-[60vh] overflow-y-auto">
                 {draftOrders.length === 0 ? (
                     <p className="text-center text-gray-500">Không có đơn hàng tạm nào.</p>
                 ) : (
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                         {draftOrders.map((order) => (
                             <DraftItem
                                 key={order.code}
-                                name={order.note}
+                                name={order.note || ""}
                                 itemCount={order.orders.length}
                                 totalPrice={order.totalPrice}
                                 timestamp={order.timeOrder}

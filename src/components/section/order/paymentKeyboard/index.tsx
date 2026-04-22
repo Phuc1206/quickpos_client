@@ -3,7 +3,7 @@ import { PaymentMode } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 import { Banknote, CreditCard, Delete } from "lucide-react";
 
-const QUICK_AMOUNTS = [10000, 20000, 50000, 100000, 200000, 500000];
+const QUICK_AMOUNTS = [100000, 200000, 500000];
 
 interface PaymentKeyboardProps {
     onDigit: (digit: string) => void;

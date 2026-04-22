@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { formatTime, formatVND, UNIT_PRICE } from '@/utils';
 import { Trash2, RotateCcw } from 'lucide-react';
 
 interface DraftItemProps {
@@ -18,29 +19,15 @@ export function DraftItem({
     onResume,
     onDelete,
 }: DraftItemProps) {
-    const formatPrice = (price: number) => {
-        return price.toLocaleString('vi-VN');
-    };
-
-    const formatTime = (date: Date) => {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-
-        return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
-    };
 
     return (
-        <div className="w-full bg-white rounded-lg border border-gray-200 p-4 hover:border-primary">
+        <div className="w-full bg-gray-50 rounded-lg border border-gray-200 p-4 hover:border-primary">
             <div className="flex items-center justify-between gap-4">
                 {/* Left Section - Info */}
                 <div className="flex-1 flex flex-col gap-1">
                     <p className="text-sm font-semibold text-gray-900">{name}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                        {itemCount} món • {formatPrice(totalPrice)} đ • {formatTime(timestamp)}
+                    <p className="text-xs text-gray-500">
+                        {itemCount} món • {formatVND(totalPrice)} {UNIT_PRICE} • {formatTime(timestamp)}
                     </p>
                 </div>
 

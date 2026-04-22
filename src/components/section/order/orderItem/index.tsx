@@ -1,3 +1,4 @@
+import { formatVND, UNIT_PRICE } from '@/utils';
 import { ImageIcon } from 'lucide-react';
 
 interface OrderItemProps {
@@ -13,33 +14,70 @@ export function OrderItem({ name, price, image, isSelected, onClick }: OrderItem
         <div
             onClick={onClick}
             className={`
-                relative w-full max-w-xs rounded-2xl overflow-hidden cursor-pointer transition-all duration-200
-                ${isSelected
-                    ? "border-2 border-[#e4621233] bg-amber-100 shadow-md"
-                    : "border border-gray-100 bg-card shadow-sm hover:shadow-md"
+                relative w-full max-w-xs rounded-2xl overflow-hidden cursor-pointer
+                transition-all duration-200 ease-out
+                transform
+            ${isSelected
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-white shadow-xl scale-[1.03]"
+                    : "border border-gray-100 bg-card shadow-sm hover:shadow-md hover:-translate-y-1"
                 }
-            `}
+    `}
         >
-            {/* {quantity > 0 && (
-                <div className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-lg animate-in zoom-in">
-                    {quantity}
-                </div>
-            )} */}
 
-            <div className={`w-full h-35 aspect-square flex items-center justify-center transition-colors ${isSelected ? "bg-amber-100" : "bg-amber-50"}`}>
+            <div className="relative w-full aspect-square">
                 {image ? (
-                    <img src={image} alt={name} className="w-full h-full object-cover" />
+                    <img src={image} alt={name} className="object-cover w-full h-full" />
                 ) : (
-                    <ImageIcon className="w-12 h-12 text-gray-400" />
+                    <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                        <ImageIcon className="w-12 h-12 text-gray-400" />
+                    </div>
                 )}
+
+                <div
+                    className={`absolute px-2 py-1 text-sm font-semibold text-white rounded-md top-2 left-2 backdrop-blur-sm transition-all duration-200
+                    ${isSelected
+                            ? "bg-primary shadow-md"
+                            : "bg-black/60"
+                        }
+                `}
+                >
+                    {formatVND(price)} {UNIT_PRICE}
+                </div>
+
+                <div className="absolute bottom-0 left-0 w-full h-16 bg-linear-to-t from-black/90 via-black/60 to-transparent" />
+
+                <div className="absolute bottom-0 w-full p-3">
+                    <h3 className="text-sm font-semibold leading-tight text-white drop-shadow-sm">
+                        {name}
+                    </h3>
+                </div>
             </div>
 
-            <div className="px-4 py-2 bg-white bottom-0">
-                <h3 className="text-base font-semibold text-foreground mb-1">{name}</h3>
-                <p className={`text-lg font-bold text-primary`}>
-                    {price.toLocaleString('vi-VN')} đ
-                </p>
-            </div>
+            {/* <div className="relative w-full aspect-square">
+                {image ? (
+                    <img
+                        src={image}
+                        alt={name}
+                        className="object-cover w-full h-full"
+                    />
+                ) : (
+                    <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                        <ImageIcon className="w-12 h-12 text-gray-400" />
+                    </div>
+                )}
+
+                <div className="absolute px-2 py-1 text-sm font-semibold text-white rounded-md top-2 left-2 bg-black/60 backdrop-blur-sm">
+                    {formatVND(price)} {UNIT_PRICE}
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                <div className="absolute bottom-0 w-full p-3">
+                    <h3 className="text-base font-semibold text-white line-clamp-2">
+                        {name}
+                    </h3>
+                </div>
+            </div> */}
         </div>
     );
 }
