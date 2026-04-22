@@ -7,6 +7,10 @@ const apiStrings = {
 	product: {
 		list: "/resources/menu-items/list",
 		create: "/product/create",
+	},
+	customer: {
+		create: "/resources/customers/",
+		detail: "/resources/customers/detail",
 	}
 } as const;
 

@@ -4,6 +4,10 @@ import { UserPlus, Printer, Check } from "lucide-react";
 import { PaymentMode, type PaymentModeType } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 import { formatVND } from "@/utils";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { CustomerModal } from "../customerModal";
+import { useState } from "react";
 
 interface PaymentBillProps {
     mode: PaymentModeType;
@@ -22,38 +26,78 @@ export default function PaymentBill({
     onPrintBillChange,
     onConfirm,
 }: PaymentBillProps) {
-    const { orderForm } = useOrderStore();
-
-    console.log("orderForm", orderForm);
-
+    const { orderForm, updateCustomerOrderForm } = useOrderStore();
+    const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
     const change = customerPaid - totalAmount;
 
     return (
-        <div className="bg-white border-gray-100 flex flex-col gap-4">
+        <div className=" border-gray-100 flex flex-col gap-4">
             {/* Total */}
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-                <p className="text-xs text-gray-400 mb-1">Tổng thanh toán</p>
-                <p className="text-3xl font-bold text-orange-500 tracking-tight">
+            <div className="rounded-xl p-4 border border-primary bg-orange-50 shadow-sm flex justify-between items-center">
+                <p className="text-xs font-medium text-gray-700">Tổng thanh toán</p>
+                <p className="text-xl font-bold text-orange-500 tracking-tight">
                     {formatVND(orderForm?.totalPrice ?? 0)} đ
                 </p>
             </div>
 
             {/* Customer */}
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-                <p className="text-xs text-gray-500 font-medium mb-2 flex items-center gap-1">
-                    <UserPlus size={13} /> Khách hàng
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex flex-col gap-2">
+                <p className="text-xs font-medium text-gray-700 flex items-center gap-1">
+                    <UserPlus size={13} />
+                    Khách hàng
+                    <span className="text-primary">{orderForm?.customer?.name && `: ${orderForm.customer.name}`}</span>
                 </p>
-                <button className="w-full flex items-center justify-center gap-1.5 text-sm text-gray-400 border border-dashed border-gray-200 rounded-lg py-2 hover:border-orange-300 hover:text-orange-400 transition-all">
-                    <UserPlus size={14} />
-                    Chọn / Thêm khách hàng
-                </button>
+                {
+                    !orderForm?.customer && (
+                        <Dialog open={isCustomerModalOpen} onOpenChange={setIsCustomerModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="w-full flex items-center justify-center gap-1.5 text-sm bg-white hover:bg-orange-100 text-gray-400 border border-dashed border-gray-200 rounded-lg py-2 hover:border-orange-300 hover:text-orange-400 transition-all"
+                                >
+                                    <UserPlus className="h-4 w-4 shrink-0" />
+                                    <p className="hidden lg:inline text-sm">Chọn / Thêm khách hàng</p>
+                                </Button>
+                            </DialogTrigger>
+
+                            <CustomerModal onClose={() => setIsCustomerModalOpen(false)} />
+                        </Dialog>
+                    )
+                }
+
+                {orderForm?.customer && (
+                    <div className="flex gap-2">
+                        {/* Đổi */}
+                        <Dialog open={isCustomerModalOpen} onOpenChange={setIsCustomerModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="flex-1 text-sm border-gray-200 hover:border-orange-300 hover:text-orange-500"
+                                >
+                                    Đổi
+                                </Button>
+                            </DialogTrigger>
+
+                            <CustomerModal onClose={() => setIsCustomerModalOpen(false)} />
+                        </Dialog>
+
+                        {/* Bỏ */}
+                        <Button
+                            variant="ghost"
+                            className="flex-1 text-sm border-red-400 text-red-400 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => { updateCustomerOrderForm(undefined) }}
+                        >
+                            Bỏ
+                        </Button>
+                    </div>
+                )}
             </div>
 
             {mode === PaymentMode.CASH && (
-                <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Customer gave */}
                     <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-                        <p className="text-xs text-gray-400 mb-1">Tiền khách đưa</p>
+                        <p className="text-xs font-medium text-gray-700">Tiền khách đưa</p>
                         <p className="text-xl font-bold text-gray-800">
                             {formatVND(customerPaid)} đ
                         </p>
@@ -68,7 +112,7 @@ export default function PaymentBill({
                                 : "bg-red-50 border-red-100"
                         )}
                     >
-                        <p className="text-xs text-gray-500 mb-1">Tiền thừa trả khách</p>
+                        <p className="text-xs font-medium text-gray-700">Tiền thừa trả khách</p>
                         <p
                             className={cn(
                                 "text-xl font-bold",
@@ -81,7 +125,7 @@ export default function PaymentBill({
                             đ
                         </p>
                     </div>
-                </>
+                </div>
             )}
 
             {/* Print toggle */}

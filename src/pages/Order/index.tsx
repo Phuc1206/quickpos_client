@@ -17,12 +17,12 @@ const OrderPage = () => {
     });
 
     return (
-        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-12 lg:grid-cols-12">
-            <section className="md:col-span-4 lg:col-span-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 lg:grid-cols-12">
+            <section className="md:col-span-4 lg:col-span-3 h-screen border-r border-gray-200">
                 <MenuSelector />
             </section>
 
-            <section className="md:col-span-8 lg:col-span-9 max-h-[calc(100vh-150px)] overflow-hidden">
+            <section className="md:col-span-8 lg:col-span-9 overflow-auto h-screen pb-20">
                 <AnimatePresence mode="wait">
                     {statusOrder === OrderStatus.ORDER && (
                         <motion.div
@@ -38,29 +38,33 @@ const OrderPage = () => {
                                     <Spinner className="size-12" />
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-5">
-                                    {productsList?.map((product) => (
-                                        <OrderItem
-                                            key={product._id}
-                                            name={product.name}
-                                            price={product.price}
-                                            image={product.image}
-                                            isSelected={currentOrder?.some(item => item._id === product._id)}
-                                            onClick={() => {
-                                                const existingItem = currentOrder?.find(item => item._id === product._id);
-                                                if (!existingItem) {
-                                                    const newOrder: Order = {
-                                                        _id: product._id,
-                                                        name: product.name,
-                                                        price: product.price,
-                                                        quantity: 1,
-                                                    };
-                                                    addCurrentOrder(newOrder);
-                                                }
-                                            }}
-                                        />
-                                    ))}
-                                </div>
+                                <section className="h-full flex flex-col gap-2">
+                                    <h3 className="text-md font-semibold text-primary lg:text-lg px-4 py-2">Danh sách món</h3>
+                                    <div className="grid grid-cols-2 gap-4 px-4 md:grid-cols-3 lg:grid-cols-5">
+                                        {productsList?.map((product) => (
+                                            <OrderItem
+                                                key={product._id}
+                                                name={product.name}
+                                                price={product.price}
+                                                image={product.image}
+                                                isSelected={currentOrder?.some(item => item._id === product._id)}
+                                                onClick={() => {
+                                                    console.log("product selected: ", product);
+                                                    const existingItem = currentOrder?.find(item => item._id === product._id);
+                                                    if (!existingItem) {
+                                                        const newOrder: Order = {
+                                                            _id: product._id,
+                                                            name: product.name,
+                                                            price: product.price,
+                                                            quantity: 1,
+                                                        };
+                                                        addCurrentOrder(newOrder);
+                                                    }
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </section>
                             )}
                         </motion.div>
                     )}
@@ -72,7 +76,7 @@ const OrderPage = () => {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: 100, opacity: 0 }}
                             transition={{ duration: 0.25 }}
-                            className="h-full"
+                            className="h-full p-4"
                         >
                             <PaymentSelector />
                         </motion.div>

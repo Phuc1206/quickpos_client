@@ -33,7 +33,7 @@ const QuantitySelector = ({
     };
 
     return (
-        <div className="w-full px-4 space-y-2 transition-all duration-300 ease-out border border-gray-200 rounded-xl h-30 bg-gray-50 hover:shadow-lg hover:border-gray-300">
+        <div className="w-full px-4 py-2 space-y-2 transition-all duration-300 ease-out border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:border-gray-300">
             <div className="flex items-center justify-between py-2">
                 <h3 className="text-sm font-semibold text-gray-900">{name}</h3>
                 {

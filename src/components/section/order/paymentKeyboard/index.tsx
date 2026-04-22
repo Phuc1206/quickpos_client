@@ -3,7 +3,7 @@ import { PaymentMode } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 import { Banknote, CreditCard, Delete } from "lucide-react";
 
-const QUICK_AMOUNTS = [100000, 200000, 500000];
+const QUICK_AMOUNTS = [10000, 20000, 50000, 100000, 200000, 500000];
 
 interface PaymentKeyboardProps {
     onDigit: (digit: string) => void;
@@ -23,8 +23,7 @@ export default function PaymentKeyboard({
     return (
         <div>
             <div
-                className="w-full bg-white flex"
-                style={{ minHeight: 520 }}
+                className="w-full flex"
             >
                 <div className="flex-1 flex flex-col gap-4">
                     <div className="flex rounded-xl overflow-hidden border border-gray-200 bg-gray-50 p-1 gap-1">
@@ -35,7 +34,7 @@ export default function PaymentKeyboard({
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm transition-all duration-200",
                                 orderForm?.paymentMethod === PaymentMode.CASH
-                                    ? "bg-green-500 text-white shadow"
+                                    ? "bg-accent text-white shadow"
                                     : "text-gray-500 hover:bg-gray-100"
                             )}
                         >

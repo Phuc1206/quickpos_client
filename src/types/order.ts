@@ -1,3 +1,4 @@
+import type { ICustomerDetail } from "./customer";
 
 
 export const OrderStatus = {
@@ -31,7 +32,7 @@ export interface OrderForm {
     note?: string;
     paymentMethod?: PaymentModeType;
     totalPriceChange?: number; // Tổng tiền đã được thay đổi (nếu có)
-    customer?: string;
+    customer?: ICustomerDetail;
     customerMoney?: number; // Số tiền khách đưa
     surplusMoney?: number; // Số tiền thừa trả khách
 }

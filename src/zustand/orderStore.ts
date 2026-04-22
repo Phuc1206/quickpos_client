@@ -1,5 +1,6 @@
 
 
+import type { ICustomerDetail } from "@/types/customer";
 import { OrderStatus, type Order, type OrderForm, type OrderStatusType, type PaymentModeType } from "@/types/order";
 import { create } from "zustand";
 
@@ -16,6 +17,7 @@ interface OrderState {
     orderForm: OrderForm | null;
     setOrderForm: (orderForm: OrderForm) => void;
     updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => void;
+    updateCustomerOrderForm: (customer?: ICustomerDetail) => void;
 
     // management draft order
     draftOrders: OrderForm[];
@@ -53,6 +55,9 @@ export const useOrderStore = create<OrderState>((set) => ({
     setOrderForm: (orderForm: OrderForm) => set({ orderForm }),
     updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => set((state) => ({
         orderForm: state.orderForm ? { ...state.orderForm, paymentMethod } : null,
+    })),
+    updateCustomerOrderForm: (customer?: ICustomerDetail) => set((state) => ({
+        orderForm: state.orderForm ? { ...state.orderForm, customer: customer ?? undefined } : null,
     })),
 
     // management draft order

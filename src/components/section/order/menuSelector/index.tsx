@@ -26,10 +26,14 @@ export function MenuSelector() {
     const totalPrice = currentOrder?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
 
     return (
-        <div className="flex flex-col w-full h-full p-2 border-r border-gray-200 max-h-svh">
-            <section className="flex-1 overflow-auto min-h-75 max-h-75">
+        <div className="flex flex-col w-full h-full max-h-full">
+            <header className="px-4 py-2">
+                <h3 className="text-md font-semibold text-primary lg:text-lg">Đơn hàng</h3>
+            </header>
+
+            <section className="flex-1 overflow-auto min-h-[45%] max-h-[45%]">
                 {(currentOrder?.length ?? 0) > 0 ? (
-                    <div className="mb-8 space-y-4">
+                    <div className="space-y-4 p-4">
                         {currentOrder?.map((item) => (
                             <div key={item._id}>
                                 {/* 👉 Tablet (md) */}
@@ -56,7 +60,7 @@ export function MenuSelector() {
                 )}
             </section>
 
-            <section className="flex flex-col gap-3 mt-2 border-t border-gray-200 lg:gap-2">
+            <section className="flex flex-col gap-3 mt-2 border-t border-gray-200 lg:gap-2 p-4">
                 <div className="flex items-center justify-between">
                     <span className="text-gray-600">Số món</span>
                     <span className="text-lg font-semibold">{currentOrder?.length || 0} món</span>
@@ -129,20 +133,19 @@ export function MenuSelector() {
                                     variant="outline"
                                     className="flex-1 gap-2 bg-white border-gray-300 lg:h-9 md:h-8"
                                     onClick={() => {
-                                        if (totalPrice > 0) {
-                                            const newDraft: OrderForm = {
-                                                code: `draft-${Date.now()}`,
-                                                timeOrder: new Date(),
-                                                totalPrice: totalPrice,
-                                                status: OrderStatus.DRAFT,
-                                                orders: currentOrder || [],
-                                                note: draftNote || "Không có ghi chú"
-                                            };
-                                            addDraftOrder(newDraft);
-                                            removeAllCurrentOrder();
-                                            setDraftNote("");
-                                        }
+                                        const newDraft: OrderForm = {
+                                            code: `draft-${Date.now()}`,
+                                            timeOrder: new Date(),
+                                            totalPrice: totalPrice,
+                                            status: OrderStatus.DRAFT,
+                                            orders: currentOrder || [],
+                                            note: draftNote || "Không có ghi chú"
+                                        };
+                                        addDraftOrder(newDraft);
+                                        removeAllCurrentOrder();
+                                        setDraftNote("");
                                     }}
+                                    disabled={currentOrder === null || currentOrder.length === 0}
                                 >
                                     <Plus className="w-4 h-4" /> Lưu tạm
                                 </Button>
