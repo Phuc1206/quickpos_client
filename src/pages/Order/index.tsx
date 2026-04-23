@@ -1,29 +1,36 @@
 import { MenuSelector } from "@/components/section/order/menuSelector";
 import { OrderItem } from "@/components/section/order/orderItem";
+import { OrderListSkeleton } from "@/components/section/order/orderItemSkeleton";
 import PaymentSelector from "@/components/section/order/paymentSelector";
 import { PaymentSuccess } from "@/components/section/order/paymentSuccess";
 import { Spinner } from "@/components/ui/spinner";
 import useDebounce from "@/hooks/useDebounce";
-import { useGetProductList } from "@/services/productServices";
+import { useGetInfiniteProducts } from "@/services/productServices";
 import { OrderStatus, type Order } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 const OrderPage = () => {
+    const { ref, inView } = useInView();
+    const { searchQuery, currentOrder, addCurrentOrder, statusOrder, setStatusOrder, bill, } = useOrderStore();
     const {
-        searchQuery,
-        currentOrder,
-        addCurrentOrder,
-        statusOrder,
-        setStatusOrder,
-        bill,
-    } = useOrderStore();
-
-    const { productsList, isLoading: isProductsLoading } = useGetProductList({
-        page: 1,
+        productsList,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading: isProductsLoading,
+    } = useGetInfiniteProducts({
         rows: 10,
         search: useDebounce(searchQuery, 1000),
     });
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4">
@@ -61,9 +68,7 @@ const OrderPage = () => {
                             className="h-full overflow-auto"
                         >
                             {isProductsLoading ? (
-                                <div className="flex items-center justify-center w-full h-full">
-                                    <Spinner className="size-12" />
-                                </div>
+                                <OrderListSkeleton />
                             ) : (
                                 <section className="h-full flex flex-col gap-2">
                                     <h3 className="text-md font-semibold text-primary lg:text-lg px-4 py-2">
@@ -98,6 +103,15 @@ const OrderPage = () => {
                                                 }}
                                             />
                                         ))}
+                                    </div>
+
+                                    <div ref={ref} className="w-full py-6 flex justify-center">
+                                        {isFetchingNextPage && (
+                                            <Spinner className="size-8" />
+                                        )}
+                                        {!hasNextPage && productsList.length > 0 && (
+                                            <p className="text-gray-400 text-sm">Hết danh sách sản phẩm</p>
+                                        )}
                                     </div>
                                 </section>
                             )}
