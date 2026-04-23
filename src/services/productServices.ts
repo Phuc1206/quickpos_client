@@ -18,8 +18,8 @@ export const useGetProductList = (payload: IPagination) => {
         }
         // enabled: false
     });
-    const queryData = (query.data as any)?.data as IProductData[];
-    const countTotal = ((query.data as any)?.count as number) || 0;
+    const queryData = (query.data as any)?.data?.menuItems as IProductData[];
+    const countTotal = ((query.data as any)?.data?.count as number) || 0;
 
     // const productsList = queryData?.map((item: IProductData) => ({
     //     ...item

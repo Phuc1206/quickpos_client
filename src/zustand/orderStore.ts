@@ -1,7 +1,7 @@
 
 
 import type { ICustomerDetail } from "@/types/customer";
-import { OrderStatus, type Order, type OrderForm, type OrderStatusType, type PaymentModeType } from "@/types/order";
+import { OrderStatus, type IBillDetail, type Order, type OrderForm, type OrderStatusType, type PaymentModeType } from "@/types/order";
 import { create } from "zustand";
 
 interface OrderState {
@@ -16,13 +16,20 @@ interface OrderState {
     //management order form
     orderForm: OrderForm | null;
     setOrderForm: (orderForm: OrderForm) => void;
+    removeOrderForm: () => void;
     updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => void;
     updateCustomerOrderForm: (customer?: ICustomerDetail) => void;
+    updateTotalPriceChangeOrderForm: (totalPriceChange: string) => void;
+    updateCustomerPaidOrderForm: (customerPaid: string) => void;
 
     // management draft order
     draftOrders: OrderForm[];
     addDraftOrder: (order: OrderForm) => void;
     removeDraftOrderById: (orderId: string) => void;
+
+    //management bill
+    bill: IBillDetail | null;
+    setBill: (bill: IBillDetail) => void;
 
     //search product
     searchQuery: string;
@@ -53,11 +60,18 @@ export const useOrderStore = create<OrderState>((set) => ({
     // management order form
     orderForm: null,
     setOrderForm: (orderForm: OrderForm) => set({ orderForm }),
+    removeOrderForm: () => set({ orderForm: null }),
     updatePaymentMethodOrderForm: (paymentMethod: PaymentModeType) => set((state) => ({
         orderForm: state.orderForm ? { ...state.orderForm, paymentMethod } : null,
     })),
     updateCustomerOrderForm: (customer?: ICustomerDetail) => set((state) => ({
         orderForm: state.orderForm ? { ...state.orderForm, customer: customer ?? undefined } : null,
+    })),
+    updateTotalPriceChangeOrderForm: (totalPriceChange: string) => set((state) => ({
+        orderForm: state.orderForm ? { ...state.orderForm, totalPriceChange } : null,
+    })),
+    updateCustomerPaidOrderForm: (customerPaid: string) => set((state) => ({
+        orderForm: state.orderForm ? { ...state.orderForm, customerPaid } : null,
     })),
 
     // management draft order
@@ -68,6 +82,10 @@ export const useOrderStore = create<OrderState>((set) => ({
     removeDraftOrderById: (orderId: string) => set((state) => ({
         draftOrders: state.draftOrders.filter(order => order.code !== orderId),
     })),
+
+    //management bill
+    bill: null,
+    setBill: (bill: IBillDetail) => set({ bill }),
 
     //search product
     searchQuery: "",

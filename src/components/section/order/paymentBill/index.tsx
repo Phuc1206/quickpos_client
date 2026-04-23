@@ -1,42 +1,61 @@
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { UserPlus, Printer, Check } from "lucide-react";
-import { PaymentMode, type PaymentModeType } from "@/types/order";
+import { EditField, PaymentMode, type EditFieldType, type PaymentModeType } from "@/types/order";
 import { useOrderStore } from "@/zustand/orderStore";
 import { formatVND } from "@/utils";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CustomerModal } from "../customerModal";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PaymentBillProps {
     mode: PaymentModeType;
-    totalAmount: number;
-    customerPaid: number;
     printBill: boolean;
     onPrintBillChange: (val: boolean) => void;
+
     onConfirm: () => void;
+
+    finalTotal?: number;
+    customerPaid: number;
+
+    onSelectEditField?: (field: EditFieldType) => void;
+    editingField?: EditFieldType;
+
+    isCreatingBill?: boolean;
 }
 
 export default function PaymentBill({
     mode,
-    totalAmount,
-    customerPaid,
     printBill,
     onPrintBillChange,
     onConfirm,
+    onSelectEditField,
+    editingField,
+    finalTotal = 0,
+    customerPaid,
+    isCreatingBill = false,
 }: PaymentBillProps) {
     const { orderForm, updateCustomerOrderForm } = useOrderStore();
     const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
-    const change = customerPaid - totalAmount;
+    const change = customerPaid - finalTotal;
 
     return (
         <div className=" border-gray-100 flex flex-col gap-4">
             {/* Total */}
-            <div className="rounded-xl p-4 border border-primary bg-orange-50 shadow-sm flex justify-between items-center">
+            <div
+                onClick={() => onSelectEditField?.(EditField.TOTAL)}
+                className={cn(
+                    "rounded-xl p-4 border shadow-sm flex justify-between items-center cursor-pointer transition-all",
+                    editingField === EditField.TOTAL
+                        ? "border-orange-400 bg-orange-50 ring-2 ring-orange-200"
+                        : "bg-white border-gray-200"
+                )}
+            >
                 <p className="text-xs font-medium text-gray-700">Tổng thanh toán</p>
-                <p className="text-xl font-bold text-orange-500 tracking-tight">
-                    {formatVND(orderForm?.totalPrice ?? 0)} đ
+                <p className="text-xl font-bold text-orange-500">
+                    {formatVND(finalTotal)} đ
                 </p>
             </div>
 
@@ -96,7 +115,14 @@ export default function PaymentBill({
             {mode === PaymentMode.CASH && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Customer gave */}
-                    <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                    <div
+                        onClick={() => onSelectEditField?.(EditField.CUSTOMER_PAID)}
+                        className={cn(
+                            "bg-white rounded-xl p-4 border border-gray-200 shadow-sm cursor-pointer transition-all",
+                            editingField === EditField.CUSTOMER_PAID &&
+                            "border-orange-400 ring-2 ring-orange-200 bg-orange-50"
+                        )}
+                    >
                         <p className="text-xs font-medium text-gray-700">Tiền khách đưa</p>
                         <p className="text-xl font-bold text-gray-800">
                             {formatVND(customerPaid)} đ
@@ -143,13 +169,24 @@ export default function PaymentBill({
             </div>
 
             {/* Confirm button */}
-            <button
+            <Button
+                disabled={isCreatingBill}
                 onClick={onConfirm}
-                className="mt-auto w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-orange-200 transition-all"
+                className="mt-auto w-full py-6 rounded-xl bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-orange-200 transition-all"
             >
-                <Check size={18} />
-                Xác nhận thanh toán
-            </button>
+                {
+                    isCreatingBill ? (
+                        <>
+                            <Spinner className="text-white" />
+                        </>
+                    ) : (
+                        <>
+                            <Check size={16} />
+                            Xác nhận thanh toán
+                        </>
+                    )
+                }
+            </Button>
         </div>
     );
 }

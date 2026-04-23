@@ -58,6 +58,7 @@ const QuantitySelector = ({
                     size="sm"
                     className="w-8 h-8 text-white transition-shadow duration-200 shadow-md bg-primary hover:bg-primary/90 hover:text-white hover:shadow-lg"
                     onClick={() => handleQuantityChange(quantity - 1)}
+                    disabled={statusOrder !== OrderStatus.ORDER}
                 >
                     <Minus className="size-4 " />
                 </Button>
@@ -69,6 +70,7 @@ const QuantitySelector = ({
                     onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
                     className="h-8 w-8 text-center border-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none px-0 focus-visible:ring-0 focus-visible:border-primary"
                     min="1"
+                    disabled={statusOrder !== OrderStatus.ORDER}
                 />
 
                 <Button
@@ -76,6 +78,7 @@ const QuantitySelector = ({
                     size="sm"
                     className="w-8 h-8 text-white transition-shadow duration-200 shadow-md bg-primary hover:bg-primary/90 hover:text-white hover:shadow-lg"
                     onClick={() => handleQuantityChange(quantity + 1)}
+                    disabled={statusOrder !== OrderStatus.ORDER}
                 >
                     <Plus className="size-4" />
                 </Button>

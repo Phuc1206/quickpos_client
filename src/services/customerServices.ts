@@ -43,3 +43,26 @@ export const useGetCustomerDetail = (customerId: string) => {
         ...query
     };
 };
+
+export const useGetCustomerSelection = (searchTerm?: string) => {
+    const query = useQuery({
+        queryKey: ["get-customer-selection", searchTerm],
+        queryFn: async () => {
+            try {
+                const res = await gateway.customer.sendGetCustomerSelectionRequest(searchTerm);
+                return res?.data ?? null;
+            } catch (error: any) {
+                console.error("Failed to fetch customer selection:", error);
+                throw error;
+            }
+        }
+        // enabled: false
+    });
+
+    const queryData = (query.data as any)?.data as ICustomerDetail[];
+
+    return {
+        customerSelection: queryData,
+        ...query
+    };
+};

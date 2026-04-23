@@ -11,7 +11,12 @@ const apiStrings = {
 	customer: {
 		create: "/resources/customers/",
 		detail: "/resources/customers/detail",
-	}
+		selection: "/resources/customers/selection",
+	},
+	order: {
+		create: "/resources/bills/",
+		detail: "/resources/bills/detail"
+	},
 } as const;
 
 export default apiStrings;

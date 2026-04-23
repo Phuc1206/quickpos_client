@@ -12,10 +12,18 @@ export type OrderStatusType = (typeof OrderStatus)[keyof typeof OrderStatus];
 
 export const PaymentMode = {
     CASH: 'CASH',
-    CARD: 'CARD',
+    CARD: 'TRANSFER',
 } as const;
 
 export type PaymentModeType = (typeof PaymentMode)[keyof typeof PaymentMode];
+
+export const EditField = {
+    NONE: "NONE",
+    TOTAL: "TOTAL",
+    CUSTOMER_PAID: "CUSTOMER_PAID",
+} as const;
+
+export type EditFieldType = (typeof EditField)[keyof typeof EditField];
 export interface Order {
     _id: string;
     name: string;
@@ -27,12 +35,63 @@ export interface OrderForm {
     code: string;
     timeOrder: Date;
     orders: Order[];
-    totalPrice: number; // Tổng thanh toán
+    totalPrice: string; // Tổng thanh toán
     status: OrderStatusType;
     note?: string;
     paymentMethod?: PaymentModeType;
-    totalPriceChange?: number; // Tổng tiền đã được thay đổi (nếu có)
     customer?: ICustomerDetail;
-    customerMoney?: number; // Số tiền khách đưa
-    surplusMoney?: number; // Số tiền thừa trả khách
+    totalPriceChange?: string; // Tổng tiền đã được thay đổi (nếu có)
+    customerPaid?: string; // Số tiền khách đưa
+    surplusMoney?: string; // Số tiền thừa trả khách
+}
+
+export interface IBillPayload {
+    customerId?: string;
+    items: {
+        menuItemId: string;
+        quantity: number;
+    }[];
+    paymentMethod: PaymentModeType;
+    cashReceived: number;
+    finalAmount: number;
+}
+
+export interface IBillDetail {
+    _id: string;
+    code: string;
+
+    customer: {
+        customerId: string;
+        name: string;
+        phoneNumber: string;
+        address: string;
+    };
+
+    employeeId: {
+        _id: string;
+        name: string;
+    };
+
+    items: {
+        _id: string;
+        menuItemId: string;
+        name: string;
+        quantity: number;
+        price: number;
+        discount: number;
+        total: number;
+    }[];
+
+    totalQuantity: number;
+    totalAmount: number;
+    discount: number;
+    finalAmount: number;
+
+    paymentMethod: PaymentModeType;
+    cashReceived: number;
+
+    isDelete: boolean;
+
+    createdAt: string;
+    updatedAt: string;
 }

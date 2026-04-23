@@ -12,15 +12,28 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, User, Plus } from "lucide-react"
-import { useCreateCustomer } from "@/services/customerServices"
+import { useCreateCustomer, useGetCustomerSelection } from "@/services/customerServices"
 import type { ICustomerDetail, ICustomerPayload } from "@/types/customer"
 import { Spinner } from "@/components/ui/spinner"
 import { useOrderStore } from "@/zustand/orderStore"
+import { CustomerItem } from "../customerItem"
 
 export function CustomerModal({ onClose }: { onClose: () => void }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
-    const customers = [];// This would be fetched from your store or API
+    const { customerSelection } = useGetCustomerSelection();
+
+    const customers = customerSelection?.filter((customer) => {
+        const name = customer.name?.toLowerCase() || "";
+        const phone = String(customer.phoneNumber || "");
+
+        const query = searchQuery.toLowerCase().trim();
+
+        return (
+            name.includes(query) ||
+            phone.includes(query)
+        );
+    });
 
     return (
         <DialogContent className="sm:max-w-125">
@@ -72,8 +85,8 @@ export function CustomerModal({ onClose }: { onClose: () => void }) {
                 </Dialog>
 
                 {/* Customer List / Empty State */}
-                <div className="py-12 max-h-[60vh] overflow-y-auto">
-                    {customers.length === 0 ? (
+                <div className="max-h-[60vh] min-h-[60vh] overflow-y-auto">
+                    {customers?.length === 0 ? (
                         <div className="flex flex-col items-center justify-center gap-4 text-center">
                             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
                                 <User className="w-8 h-8 text-gray-400" />
@@ -82,7 +95,19 @@ export function CustomerModal({ onClose }: { onClose: () => void }) {
                         </div>
                     ) : (
                         <div className="space-y-2">
-                            {/* Customer items would go here */}
+                            {
+                                customers?.map((customer) => (
+                                    <div key={customer._id} onClick={() => {
+                                        useOrderStore.getState().updateCustomerOrderForm(customer);
+                                        onClose?.();
+                                    }}>
+                                        <CustomerItem
+                                            name={customer.name}
+                                            phoneNumber={customer.phoneNumber}
+                                        />
+                                    </div>
+                                ))
+                            }
                         </div>
                     )}
                 </div>

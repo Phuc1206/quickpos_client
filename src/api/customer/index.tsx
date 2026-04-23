@@ -25,9 +25,24 @@ const sendGetCustomerDetailRequest = async (customerId: string) => {
     }
 }
 
+const sendGetCustomerSelectionRequest = async (searchTerm?: string) => {
+    try {
+        const response = await api.get(`${apiStrings.customer.selection}`, {
+            params: { search: searchTerm }
+        });
+        // console.log("Get customer selection request api:", response);
+        return response;
+    } catch (error) {
+        console.error("Get customer selection request failed:", error);
+        throw error;
+    }
+}
+
+
 const customer = {
     sendCreateCustomerRequest,
     sendGetCustomerDetailRequest,
+    sendGetCustomerSelectionRequest,
 }
 
 export default customer;

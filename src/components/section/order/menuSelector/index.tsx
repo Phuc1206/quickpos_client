@@ -80,12 +80,11 @@ export function MenuSelector() {
                             onClick={() => {
                                 if (currentOrder) {
                                     const newOrderForm: OrderForm = {
-                                        code: `draft-${Date.now()}`,
+                                        code: `payment-${Date.now()}`,
                                         timeOrder: new Date(),
-                                        totalPrice: totalPrice,
-                                        status: OrderStatus.DRAFT,
+                                        totalPrice: totalPrice.toString(),
+                                        status: OrderStatus.PAYMENT,
                                         orders: currentOrder,
-                                        note: draftNote || "",
                                         paymentMethod: PaymentMode.CASH
                                     };
                                     setOrderForm(newOrderForm);
@@ -136,7 +135,7 @@ export function MenuSelector() {
                                         const newDraft: OrderForm = {
                                             code: `draft-${Date.now()}`,
                                             timeOrder: new Date(),
-                                            totalPrice: totalPrice,
+                                            totalPrice: totalPrice.toString(),
                                             status: OrderStatus.DRAFT,
                                             orders: currentOrder || [],
                                             note: draftNote || "Không có ghi chú"

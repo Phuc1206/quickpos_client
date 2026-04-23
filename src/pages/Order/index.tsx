@@ -1,6 +1,7 @@
 import { MenuSelector } from "@/components/section/order/menuSelector";
 import { OrderItem } from "@/components/section/order/orderItem";
 import PaymentSelector from "@/components/section/order/paymentSelector";
+import { PaymentSuccess } from "@/components/section/order/paymentSuccess";
 import { Spinner } from "@/components/ui/spinner";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetProductList } from "@/services/productServices";
@@ -9,7 +10,15 @@ import { useOrderStore } from "@/zustand/orderStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 const OrderPage = () => {
-    const { searchQuery, currentOrder, addCurrentOrder, statusOrder } = useOrderStore();
+    const {
+        searchQuery,
+        currentOrder,
+        addCurrentOrder,
+        statusOrder,
+        setStatusOrder,
+        bill,
+    } = useOrderStore();
+
     const { productsList, isLoading: isProductsLoading } = useGetProductList({
         page: 1,
         rows: 10,
@@ -17,13 +26,31 @@ const OrderPage = () => {
     });
 
     return (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 lg:grid-cols-12">
-            <section className="md:col-span-4 lg:col-span-3 h-screen border-r border-gray-200">
-                <MenuSelector />
-            </section>
+        <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4">
+            <AnimatePresence>
+                {statusOrder !== OrderStatus.PAYMENT_SUCCESS && (
+                    <motion.section
+                        key="menu"
+                        initial={{ x: -100, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -100, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="md:col-span-4 lg:col-span-3 h-screen border-r border-gray-200"
+                    >
+                        <MenuSelector />
+                    </motion.section>
+                )}
+            </AnimatePresence>
 
-            <section className="md:col-span-8 lg:col-span-9 overflow-auto h-screen pb-20">
+            <section
+                className={`h-screen overflow-auto pb-20 transition-all duration-300 
+                    ${statusOrder === OrderStatus.PAYMENT_SUCCESS
+                        ? "col-span-12"
+                        : "md:col-span-8 lg:col-span-9"
+                    }`}
+            >
                 <AnimatePresence mode="wait">
+
                     {statusOrder === OrderStatus.ORDER && (
                         <motion.div
                             key="order"
@@ -39,7 +66,10 @@ const OrderPage = () => {
                                 </div>
                             ) : (
                                 <section className="h-full flex flex-col gap-2">
-                                    <h3 className="text-md font-semibold text-primary lg:text-lg px-4 py-2">Danh sách món</h3>
+                                    <h3 className="text-md font-semibold text-primary lg:text-lg px-4 py-2">
+                                        Danh sách món
+                                    </h3>
+
                                     <div className="grid grid-cols-2 gap-4 px-4 md:grid-cols-3 lg:grid-cols-5">
                                         {productsList?.map((product) => (
                                             <OrderItem
@@ -47,10 +77,14 @@ const OrderPage = () => {
                                                 name={product.name}
                                                 price={product.price}
                                                 image={product.image}
-                                                isSelected={currentOrder?.some(item => item._id === product._id)}
+                                                isSelected={currentOrder?.some(
+                                                    (item) => item._id === product._id
+                                                )}
                                                 onClick={() => {
-                                                    console.log("product selected: ", product);
-                                                    const existingItem = currentOrder?.find(item => item._id === product._id);
+                                                    const existingItem = currentOrder?.find(
+                                                        (item) => item._id === product._id
+                                                    );
+
                                                     if (!existingItem) {
                                                         const newOrder: Order = {
                                                             _id: product._id,
@@ -58,6 +92,7 @@ const OrderPage = () => {
                                                             price: product.price,
                                                             quantity: 1,
                                                         };
+
                                                         addCurrentOrder(newOrder);
                                                     }
                                                 }}
@@ -81,11 +116,28 @@ const OrderPage = () => {
                             <PaymentSelector />
                         </motion.div>
                     )}
+
+                    {statusOrder === OrderStatus.PAYMENT_SUCCESS && (
+                        <motion.div
+                            key="payment-success"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="h-full w-full flex items-center justify-center"
+                        >
+                            <PaymentSuccess
+                                invoiceCode={bill?.code || "Chưa cập nhật"}
+                                onPrintBill={() => { }}
+                                onNewOrder={() => setStatusOrder(OrderStatus.ORDER)}
+                            />
+                        </motion.div>
+                    )}
+
                 </AnimatePresence>
             </section>
         </div>
     );
-
-}
+};
 
 export default OrderPage;
