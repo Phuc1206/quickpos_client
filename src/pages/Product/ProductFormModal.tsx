@@ -7,20 +7,35 @@ import { useUpdateProduct } from "@/services/productServices";
 const productSchema = z.object({
 	name: z.string().min(1, "Tên món không được để trống"),
 	price: z.coerce.number().min(1000, "Giá phải lớn hơn 1000"),
-	image: z.any().optional(),
+	image: z
+		.any()
+		.refine((files) => {
+			if (!files || files.length === 0) return true;
+			return files[0] instanceof File;
+		}, "File không hợp lệ")
+		.refine((files) => {
+			if (!files || files.length === 0) return true;
+			return files[0].size <= 2 * 1024 * 1024;
+		}, "Ảnh tối đa 2MB")
+		.refine((files) => {
+			if (!files || files.length === 0) return true;
+			return ["image/jpeg", "image/png", "image/webp"].includes(files[0].type);
+		}, "Chỉ hỗ trợ JPG, PNG, WEBP")
+		.optional(),
 });
 
-type FormValues = z.infer<typeof productSchema>;
+type FormValues = z.input<typeof productSchema>;
 
 export default function ProductFormModal({
 	open,
 	onClose,
 	onSuccess,
 	data,
+	isLoading,
 }: any) {
-	const [preview, setPreview] = useState("");
+	const [localPreview, setLocalPreview] = useState("");
 
-	const { mutate: updateProduct, isLoading } = useUpdateProduct();
+	const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
 
 	const {
 		register,
@@ -35,26 +50,33 @@ export default function ProductFormModal({
 		},
 	});
 
-	// chỉ reset khi mở modal
+	// derive preview (KHÔNG cần setState từ data nữa)
+	const preview = localPreview || data?.image || "";
+
+	// cleanup preview blob
+	useEffect(() => {
+		return () => {
+			if (localPreview && localPreview.startsWith("blob:")) {
+				URL.revokeObjectURL(localPreview);
+			}
+		};
+	}, [localPreview]);
+
+	// chỉ reset form khi mở modal
 	useEffect(() => {
 		if (!open) return;
+		if (isLoading) return;
+		reset({
+			name: data?.name || "",
+			price: data?.price || 0,
+		});
 
-		if (data) {
-			reset({
-				name: data.name,
-				price: data.price,
-			});
-			setPreview(data.image);
-		} else {
-			reset({
-				name: "",
-				price: 0,
-			});
-			setPreview("");
-		}
-	}, [open, data, reset]);
+		// reset preview local
+		// eslint-disable-next-line react-hooks/set-state-in-effect
+		setLocalPreview("");
+	}, [open, data, isLoading, reset]);
 
-	const onSubmit = (values: FormValues) => {
+	const buildFormData = (values: FormValues) => {
 		const formData = new FormData();
 		formData.append("name", values.name);
 		formData.append("price", String(values.price));
@@ -62,6 +84,12 @@ export default function ProductFormModal({
 		if (values.image?.[0]) {
 			formData.append("image", values.image[0]);
 		}
+
+		return formData;
+	};
+
+	const onSubmit = (values: FormValues) => {
+		const formData = buildFormData(values);
 
 		if (data) {
 			updateProduct(
@@ -103,7 +131,7 @@ export default function ProductFormModal({
 						placeholder="Tên món"
 						className="border w-full mb-1 p-2 rounded-lg"
 						{...register("name")}
-						disabled={isLoading}
+						disabled={isUpdating}
 					/>
 					{errors.name && (
 						<p className="text-red-500 text-sm mb-2">{errors.name.message}</p>
@@ -115,7 +143,7 @@ export default function ProductFormModal({
 						placeholder="Giá"
 						className="border w-full mb-1 p-2 rounded-lg"
 						{...register("price")}
-						disabled={isLoading}
+						disabled={isUpdating}
 					/>
 					{errors.price && (
 						<p className="text-red-500 text-sm mb-2">{errors.price.message}</p>
@@ -123,33 +151,39 @@ export default function ProductFormModal({
 
 					{/* image */}
 					<input
+						key={data?._id || "new"}
 						type="file"
 						className="mb-4"
 						{...register("image")}
 						onChange={(e) => {
-							if (e.target.files?.[0]) {
-								setPreview(URL.createObjectURL(e.target.files[0]));
+							const file = e.target.files?.[0];
+							if (file) {
+								const url = URL.createObjectURL(file);
+								setLocalPreview(url);
+
+								// cho phép chọn lại cùng file
+								e.target.value = "";
 							}
 						}}
-						disabled={isLoading}
+						disabled={isUpdating}
 					/>
 
 					<div className="flex justify-end gap-2">
 						<button
 							type="button"
 							onClick={onClose}
-							className="px-3 py-1 rounded bg-gray-100"
-							disabled={isLoading}
+							className="px-3 py-1 rounded bg-gray-100 disabled:opacity-70"
+							disabled={isUpdating}
 						>
 							Hủy
 						</button>
 
 						<button
 							type="submit"
-							disabled={isLoading}
-							className="bg-blue-600 text-white px-4 py-1 rounded flex items-center gap-2"
+							disabled={isUpdating}
+							className="bg-blue-600 text-white px-4 py-1 rounded flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
 						>
-							{isLoading && (
+							{isUpdating && (
 								<span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
 							)}
 							{data ? "Cập nhật" : "Lưu"}

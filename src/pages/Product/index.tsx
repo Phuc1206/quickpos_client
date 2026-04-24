@@ -26,7 +26,9 @@ const ProductPage = () => {
 		rows,
 		search: debouncedSearch,
 	});
-	const { productDetail } = useGetProductDetail(selectedItem?._id);
+	const { productDetail, isLoading: isLoadingDetail } = useGetProductDetail(
+		selectedItem?._id,
+	);
 
 	const totalPages = Math.ceil(productListCount / rows);
 
@@ -191,6 +193,7 @@ const ProductPage = () => {
 				onClose={() => setOpen(false)}
 				onSuccess={() => setOpen(false)}
 				data={productDetail}
+				isLoading={isLoadingDetail}
 			/>
 			<ProductDetailModal
 				open={openView}
