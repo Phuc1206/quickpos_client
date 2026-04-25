@@ -14,7 +14,18 @@ import { useInView } from "react-intersection-observer";
 
 const OrderPage = () => {
     const { ref, inView } = useInView();
-    const { searchQuery, currentOrder, addCurrentOrder, statusOrder, setStatusOrder, bill, } = useOrderStore();
+    const {
+        searchQuery,
+        currentOrder,
+        addCurrentOrder,
+        removeCurrentOrderById,
+        statusOrder,
+        setStatusOrder,
+        bill,
+        removeBill,
+        removeAllCurrentOrder,
+        removeOrderForm
+    } = useOrderStore();
     const {
         productsList,
         fetchNextPage,
@@ -82,23 +93,20 @@ const OrderPage = () => {
                                                 name={product.name}
                                                 price={product.price}
                                                 image={product.image}
-                                                isSelected={currentOrder?.some(
-                                                    (item) => item._id === product._id
-                                                )}
+                                                isSelected={currentOrder?.some((item) => item._id === product._id)}
                                                 onClick={() => {
-                                                    const existingItem = currentOrder?.find(
-                                                        (item) => item._id === product._id
-                                                    );
+                                                    const isExisting = currentOrder?.some((item) => item._id === product._id);
 
-                                                    if (!existingItem) {
+                                                    if (!isExisting) {
                                                         const newOrder: Order = {
                                                             _id: product._id,
                                                             name: product.name,
                                                             price: product.price,
                                                             quantity: 1,
                                                         };
-
                                                         addCurrentOrder(newOrder);
+                                                    } else {
+                                                        removeCurrentOrderById(product._id);
                                                     }
                                                 }}
                                             />
@@ -142,8 +150,12 @@ const OrderPage = () => {
                         >
                             <PaymentSuccess
                                 invoiceCode={bill?.code || "Chưa cập nhật"}
-                                onPrintBill={() => { }}
-                                onNewOrder={() => setStatusOrder(OrderStatus.ORDER)}
+                                onNewOrder={() => {
+                                    setStatusOrder(OrderStatus.ORDER);
+                                    removeAllCurrentOrder();
+                                    removeOrderForm();
+                                    removeBill();
+                                }}
                             />
                         </motion.div>
                     )}

@@ -8,9 +8,10 @@ export const useCreateBill = () => {
 		mutationFn: (payload: IBillPayload) =>
 			gateway.order.sendCreateBillRequest(payload),
 		onSuccess: async (data) => {
-			toast.success(data?.data?.message || "Tạo hóa đơn thành công", {
-				description: "Hóa đơn đã được tạo thành công.",
-			});
+			console.log("Create bill success:", data);
+			// toast.success(data?.data?.message || "Tạo hóa đơn thành công", {
+			// 	description: "Hóa đơn đã được tạo thành công.",
+			// });
 		},
 		onError: (error) => {
 			console.log("Create bill error:", error);

@@ -37,14 +37,17 @@ export function PaymentSuccess({
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 w-full">
-                    <Button
-                        variant="outline"
-                        onClick={onPrintBill}
-                        className="flex-1 gap-2 w-10 h-10"
-                    >
-                        <Printer className="w-6 h-6" />
-                        In Bill
-                    </Button>
+                    {onPrintBill && (
+                        <Button
+                            variant="outline"
+                            onClick={onPrintBill}
+                            className="flex-1 gap-2 w-10 h-10"
+                        >
+                            <Printer className="w-6 h-6" />
+                            In Bill
+                        </Button>
+                    )}
+
                     <Button
                         onClick={onNewOrder}
                         className="flex-1 gap-2 bg-orange-600 hover:bg-orange-700 w-10 h-10"

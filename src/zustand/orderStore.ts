@@ -30,6 +30,7 @@ interface OrderState {
     //management bill
     bill: IBillDetail | null;
     setBill: (bill: IBillDetail) => void;
+    removeBill: () => void;
 
     //search product
     searchQuery: string;
@@ -86,6 +87,7 @@ export const useOrderStore = create<OrderState>((set) => ({
     //management bill
     bill: null,
     setBill: (bill: IBillDetail) => set({ bill }),
+    removeBill: () => set({ bill: null }),
 
     //search product
     searchQuery: "",

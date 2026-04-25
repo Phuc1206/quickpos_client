@@ -1,14 +1,17 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { EditField, OrderStatus, PaymentMode, type EditFieldType, type IBillDetail, type IBillPayload } from "@/types/order";
 import PaymentKeyboard from "../paymentKeyboard";
 import PaymentBill from "../paymentBill";
 import { useOrderStore } from "@/zustand/orderStore";
 import { useCreateBill } from "@/services/orderServices";
+import BillPrintTemplate from "../ReceiptTemplate";
+import { useReactToPrint } from "react-to-print";
 
 export default function PaymentSelector() {
-    const { orderForm, updateTotalPriceChangeOrderForm, updateCustomerPaidOrderForm, setStatusOrder, setBill, removeOrderForm, removeAllCurrentOrder } = useOrderStore();
+    const { orderForm, updateTotalPriceChangeOrderForm, updateCustomerPaidOrderForm, setStatusOrder, bill, setBill } = useOrderStore();
     const [printBill, setPrintBill] = useState<boolean>(true);
     const [editField, setEditField] = useState<EditFieldType>(EditField.CUSTOMER_PAID);
+    const printRef = useRef<HTMLDivElement>(null);
     const { mutateAsync: createBill, isPending: isCreatingBill } = useCreateBill();
 
     const handleDigit = useCallback((digit: string) => {
@@ -56,6 +59,14 @@ export default function PaymentSelector() {
         }
     }, [editField, updateCustomerPaidOrderForm, updateTotalPriceChangeOrderForm]);
 
+
+    const handlePrint = useReactToPrint({
+        contentRef: printRef,
+        // onAfterPrint: () => {
+        //     removeBill();
+        // },
+    });
+
     const handleConfirm = useCallback(() => {
         const bill: IBillPayload = {
             customerId: orderForm?.customer?._id,
@@ -67,42 +78,61 @@ export default function PaymentSelector() {
             cashReceived: orderForm?.paymentMethod === PaymentMode.CASH ? Number(orderForm?.customerPaid) || 0 : 0,
             finalAmount: Number(orderForm?.totalPriceChange) || Number(orderForm?.totalPrice) || 0,
         }
+
         createBill(bill, {
-            onSuccess: (data) => {
-                const createdBill = (data as any)?.data?.data as IBillDetail;
-                setStatusOrder(OrderStatus.PAYMENT_SUCCESS);
-                setBill(createdBill);
-                removeAllCurrentOrder();
-                removeOrderForm();
-                console.log("Bill created successfully:", createdBill);
+            onSuccess: async (data) => {
+                const billData = (data as any)?.data?.data as IBillDetail;
+                setBill(billData);
+
+                const finalizeOrder = () => {
+                    setStatusOrder(OrderStatus.PAYMENT_SUCCESS);
+                };
+
+                if (printBill && billData) {
+                    setTimeout(() => {
+                        handlePrint();
+                        finalizeOrder();
+                    }, 100);
+                } else {
+                    finalizeOrder();
+                }
             }
         });
-    }, [orderForm, createBill, setStatusOrder, setBill, removeOrderForm, removeAllCurrentOrder]);
+    }, [orderForm, createBill, setBill, handlePrint, printBill, setStatusOrder]);
 
     return (
-        <div className="bg-white grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
-            <div className="md:col-span-7 md:border-r md:pr-4 md:border-gray-100">
-                <PaymentKeyboard
-                    onDigit={handleDigit}
-                    onBackspace={handleBackspace}
-                    onClear={handleClear}
-                    onQuickAmount={handleQuickAmount}
-                />
+        <>
+            <div data-print-hide className="bg-white grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
+                <div className="md:col-span-7 md:border-r md:pr-4 md:border-gray-100">
+                    <PaymentKeyboard
+                        onDigit={handleDigit}
+                        onBackspace={handleBackspace}
+                        onClear={handleClear}
+                        onQuickAmount={handleQuickAmount}
+                    />
+                </div>
+
+                <div className="md:col-span-5 bg-white">
+                    <PaymentBill
+                        mode={orderForm?.paymentMethod ?? PaymentMode.CASH}
+                        customerPaid={Number(orderForm?.customerPaid) || 0}
+                        printBill={printBill}
+                        onPrintBillChange={setPrintBill}
+                        onConfirm={handleConfirm}
+                        onSelectEditField={setEditField}
+                        editingField={editField}
+                        finalTotal={Number(orderForm?.totalPriceChange) || Number(orderForm?.totalPrice) || 0}
+                        isCreatingBill={isCreatingBill}
+                    />
+                </div>
             </div>
 
-            <div className="md:col-span-5 bg-white">
-                <PaymentBill
-                    mode={orderForm?.paymentMethod ?? PaymentMode.CASH}
-                    customerPaid={Number(orderForm?.customerPaid) || 0}
-                    printBill={printBill}
-                    onPrintBillChange={setPrintBill}
-                    onConfirm={handleConfirm}
-                    onSelectEditField={setEditField}
-                    editingField={editField}
-                    finalTotal={Number(orderForm?.totalPriceChange) || Number(orderForm?.totalPrice) || 0}
-                    isCreatingBill={isCreatingBill}
-                />
+            <div id="print-area" style={{ display: "none" }}>
+                <div ref={printRef}>
+                    {bill && <BillPrintTemplate bill={bill} />}
+                </div>
             </div>
-        </div>
+
+        </>
     );
 }

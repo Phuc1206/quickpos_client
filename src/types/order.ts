@@ -56,6 +56,16 @@ export interface IBillPayload {
     finalAmount: number;
 }
 
+export interface IBillMenuItem {
+    _id: string;
+    menuItemId: string;
+    name: string;
+    quantity: number;
+    price: number;
+    discount: number;
+    total: number;
+}
+
 export interface IBillDetail {
     _id: string;
     code: string;
@@ -72,15 +82,7 @@ export interface IBillDetail {
         name: string;
     };
 
-    items: {
-        _id: string;
-        menuItemId: string;
-        name: string;
-        quantity: number;
-        price: number;
-        discount: number;
-        total: number;
-    }[];
+    items: IBillMenuItem[];
 
     totalQuantity: number;
     totalAmount: number;
