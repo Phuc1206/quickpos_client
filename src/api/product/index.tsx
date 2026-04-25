@@ -33,7 +33,7 @@ const getProductDetailRequest = async (id: string) => {
 const updateProductRequest = async (id: string, payload: any) => {
 	try {
 		const response = await api.patch(
-			`${apiStrings.product.update}/${id}`,
+			`${apiStrings.product.update}${id}`,
 			payload,
 		);
 		// console.log("Product update request api:", response);
@@ -43,10 +43,34 @@ const updateProductRequest = async (id: string, payload: any) => {
 		throw error;
 	}
 };
+
+const createProductRequest = async (payload: any) => {
+	try {
+		const response = await api.post(apiStrings.product.create, payload);
+		// console.log("Product create request api:", response);
+		return response;
+	} catch (error) {
+		console.error("Product create request failed:", error);
+		throw error;
+	}
+};
+
+const deleteProductRequest = async (id: string) => {
+	try {
+		const response = await api.delete(`${apiStrings.product.delete}${id}`);
+		// console.log("Product delete request api:", response);
+		return response;
+	} catch (error) {
+		console.error("Product delete request failed:", error);
+		throw error;
+	}
+};
 const product = {
 	sendProductListRequest,
 	getProductDetailRequest,
 	updateProductRequest,
+	createProductRequest,
+	deleteProductRequest,
 };
 
 export default product;

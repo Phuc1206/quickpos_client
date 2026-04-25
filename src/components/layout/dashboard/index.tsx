@@ -3,57 +3,84 @@ import { useLogout } from "@/services/authServices";
 import { SLUG_NAME } from "@/constants/slugName";
 import Header from "@/components/ui/header";
 
+// shadcn
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+
+// icons (lucide)
+import {
+	LayoutDashboard,
+	UtensilsCrossed,
+	Receipt,
+	Users,
+	UserCog,
+	LogOut,
+} from "lucide-react";
+
 export default function DashboardLayout() {
 	const { mutateAsync: logout } = useLogout();
 
 	const navItemClass = ({ isActive }: { isActive: boolean }) =>
-		`flex items-center gap-2 px-3 py-2 rounded-lg transition ${
+		cn(
+			"flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition",
 			isActive
-				? "bg-blue-600 text-white"
-				: "text-gray-300 hover:bg-gray-800 hover:text-white"
-		}`;
+				? "bg-primary text-primary-foreground"
+				: "text-muted-foreground hover:bg-muted hover:text-foreground",
+		);
 
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen bg-muted/40">
 			{/* Sidebar */}
-			<div className="w-64 bg-gray-900 text-white flex flex-col">
+			<div className="w-64 border-r bg-background flex flex-col">
 				{/* Logo */}
-				<div className="px-4 py-5 border-b border-gray-800">
-					<h2 className="text-xl font-bold text-blue-400! ">QuickPOS</h2>
-					<p className="text-xs text-gray-400">Admin Dashboard</p>
+				<div className="h-16 flex items-center px-6 border-b">
+					<div>
+						<h2 className="text-lg font-bold">QuickPOS</h2>
+						<p className="text-xs text-muted-foreground">Admin Dashboard</p>
+					</div>
 				</div>
 
 				{/* Menu */}
-				<nav className="flex-1 p-4 space-y-2">
-					<NavLink to={SLUG_NAME.FEATURE.DASHBOARD} className={navItemClass}>
-						📊 Dashboard
-					</NavLink>
+				<ScrollArea className="flex-1 px-3 py-4">
+					<nav className="space-y-1">
+						<NavLink to={SLUG_NAME.FEATURE.DASHBOARD} className={navItemClass}>
+							<LayoutDashboard size={18} />
+							Dashboard
+						</NavLink>
 
-					<NavLink to={SLUG_NAME.FEATURE.PRODUCT} className={navItemClass}>
-						🍜 Quản lý món
-					</NavLink>
+						<NavLink to={SLUG_NAME.FEATURE.PRODUCT} className={navItemClass}>
+							<UtensilsCrossed size={18} />
+							Quản lý món
+						</NavLink>
 
-					<NavLink to={SLUG_NAME.FEATURE.INVOICE} className={navItemClass}>
-						🧾 Đơn hàng
-					</NavLink>
+						<NavLink to={SLUG_NAME.FEATURE.INVOICE} className={navItemClass}>
+							<Receipt size={18} />
+							Đơn hàng
+						</NavLink>
 
-					<NavLink to={SLUG_NAME.FEATURE.CUSTOMER} className={navItemClass}>
-						👤 Khách hàng
-					</NavLink>
+						<NavLink to={SLUG_NAME.FEATURE.CUSTOMER} className={navItemClass}>
+							<Users size={18} />
+							Khách hàng
+						</NavLink>
 
-					<NavLink to={SLUG_NAME.FEATURE.EMPLOYEE} className={navItemClass}>
-						👷 Nhân viên
-					</NavLink>
-				</nav>
+						<NavLink to={SLUG_NAME.FEATURE.EMPLOYEE} className={navItemClass}>
+							<UserCog size={18} />
+							Nhân viên
+						</NavLink>
+					</nav>
+				</ScrollArea>
 
 				{/* Logout */}
-				<div className="p-4 border-t border-gray-800">
-					<button
+				<div className="p-4 border-t">
+					<Button
+						variant="destructive"
+						className="w-full flex items-center gap-2"
 						onClick={() => logout()}
-						className="w-full bg-red-500 hover:bg-red-600 transition px-3 py-2 rounded-lg text-white"
 					>
+						<LogOut size={16} />
 						Đăng xuất
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -63,9 +90,9 @@ export default function DashboardLayout() {
 				<Header />
 
 				{/* Main */}
-				<div className="flex-1 p-6 overflow-auto">
+				<main className="flex-1 overflow-auto p-6">
 					<Outlet />
-				</div>
+				</main>
 			</div>
 		</div>
 	);

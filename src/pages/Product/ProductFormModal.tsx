@@ -2,7 +2,24 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useUpdateProduct } from "@/services/productServices";
+import { useCreateProduct, useUpdateProduct } from "@/services/productServices";
+
+// shadcn
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 
 const productSchema = z.object({
 	name: z.string().min(1, "Tên món không được để trống"),
@@ -36,13 +53,11 @@ export default function ProductFormModal({
 	const [localPreview, setLocalPreview] = useState("");
 
 	const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
+	const { mutate: createProduct, isLoading: isCreating } = useCreateProduct();
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors },
-	} = useForm<FormValues>({
+	const isSubmitting = isUpdating || isCreating;
+
+	const form = useForm<FormValues>({
 		resolver: zodResolver(productSchema),
 		defaultValues: {
 			name: "",
@@ -50,31 +65,30 @@ export default function ProductFormModal({
 		},
 	});
 
-	// derive preview (KHÔNG cần setState từ data nữa)
+	// preview
 	const preview = localPreview || data?.image || "";
 
-	// cleanup preview blob
+	// cleanup blob
 	useEffect(() => {
 		return () => {
-			if (localPreview && localPreview.startsWith("blob:")) {
+			if (localPreview?.startsWith("blob:")) {
 				URL.revokeObjectURL(localPreview);
 			}
 		};
 	}, [localPreview]);
 
-	// chỉ reset form khi mở modal
+	// reset khi mở modal
 	useEffect(() => {
-		if (!open) return;
-		if (isLoading) return;
-		reset({
+		if (!open || isLoading) return;
+
+		form.reset({
 			name: data?.name || "",
 			price: data?.price || 0,
 		});
 
-		// reset preview local
 		// eslint-disable-next-line react-hooks/set-state-in-effect
 		setLocalPreview("");
-	}, [open, data, isLoading, reset]);
+	}, [open, data, isLoading, form]);
 
 	const buildFormData = (values: FormValues) => {
 		const formData = new FormData();
@@ -102,95 +116,136 @@ export default function ProductFormModal({
 				},
 			);
 		} else {
-			console.log("create");
+			createProduct(formData, {
+				onSuccess: () => {
+					onSuccess();
+					onClose();
+				},
+			});
 		}
 	};
 
-	if (!open) return null;
-
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center">
-			<div className="absolute inset-0 bg-black/40" onClick={onClose} />
-
-			<div className="relative bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-				<h2 className="text-lg font-bold mb-4">
-					{data ? "Sửa món" : "Thêm món"}
-				</h2>
+		<Dialog open={open} onOpenChange={onClose}>
+			<DialogContent className="sm:max-w-md">
+				<DialogHeader>
+					<DialogTitle>{data ? "Sửa món" : "Thêm món"}</DialogTitle>
+					<p className="text-sm text-muted-foreground">
+						Nhập thông tin sản phẩm của bạn
+					</p>
+				</DialogHeader>
 
 				{/* preview */}
 				{preview && (
-					<img
-						src={preview}
-						className="w-full h-40 object-cover rounded-lg mb-3"
-					/>
+					<div className="relative">
+						<img
+							src={preview}
+							className="w-full h-40 object-cover rounded-xl"
+						/>
+						<Button
+							type="button"
+							size="sm"
+							variant="secondary"
+							className="absolute top-2 right-2"
+							onClick={() => {
+								setLocalPreview("");
+								form.setValue("image", undefined);
+							}}
+						>
+							Xóa
+						</Button>
+					</div>
 				)}
 
-				<form onSubmit={handleSubmit(onSubmit)}>
-					{/* name */}
-					<input
-						placeholder="Tên món"
-						className="border w-full mb-1 p-2 rounded-lg"
-						{...register("name")}
-						disabled={isUpdating}
-					/>
-					{errors.name && (
-						<p className="text-red-500 text-sm mb-2">{errors.name.message}</p>
-					)}
-
-					{/* price */}
-					<input
-						type="number"
-						placeholder="Giá"
-						className="border w-full mb-1 p-2 rounded-lg"
-						{...register("price")}
-						disabled={isUpdating}
-					/>
-					{errors.price && (
-						<p className="text-red-500 text-sm mb-2">{errors.price.message}</p>
-					)}
-
-					{/* image */}
-					<input
-						key={data?._id || "new"}
-						type="file"
-						className="mb-4"
-						{...register("image")}
-						onChange={(e) => {
-							const file = e.target.files?.[0];
-							if (file) {
-								const url = URL.createObjectURL(file);
-								setLocalPreview(url);
-
-								// cho phép chọn lại cùng file
-								e.target.value = "";
-							}
-						}}
-						disabled={isUpdating}
-					/>
-
-					<div className="flex justify-end gap-2">
-						<button
-							type="button"
-							onClick={onClose}
-							className="px-3 py-1 rounded bg-gray-100 disabled:opacity-70"
-							disabled={isUpdating}
-						>
-							Hủy
-						</button>
-
-						<button
-							type="submit"
-							disabled={isUpdating}
-							className="bg-blue-600 text-white px-4 py-1 rounded flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-						>
-							{isUpdating && (
-								<span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						{/* name */}
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Tên món</FormLabel>
+									<Input
+										placeholder="Nhập tên món..."
+										{...field}
+										disabled={isSubmitting}
+									/>
+									<FormMessage />
+								</FormItem>
 							)}
-							{data ? "Cập nhật" : "Lưu"}
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
+						/>
+
+						{/* price */}
+						<FormField
+							control={form.control}
+							name="price"
+							render={({ field }: any) => (
+								<FormItem>
+									<FormLabel>Giá</FormLabel>
+									<Input
+										type="number"
+										placeholder="Nhập giá..."
+										{...field}
+										disabled={isSubmitting}
+									/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* upload */}
+						<FormField
+							control={form.control}
+							name="image"
+							render={() => (
+								<FormItem>
+									<FormLabel>Hình ảnh</FormLabel>
+
+									<label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-4 cursor-pointer hover:bg-gray-50 transition">
+										<span className="text-sm text-gray-500">
+											Click để upload hoặc kéo ảnh vào
+										</span>
+
+										<input
+											type="file"
+											className="hidden"
+											onChange={(e) => {
+												const file = e.target.files?.[0];
+												if (file) {
+													const url = URL.createObjectURL(file);
+													setLocalPreview(url);
+
+													form.setValue("image", e.target.files);
+												}
+											}}
+											disabled={isSubmitting}
+										/>
+									</label>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* actions */}
+						<div className="flex justify-end gap-2 pt-2">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={onClose}
+								disabled={isSubmitting}
+							>
+								Hủy
+							</Button>
+
+							<Button type="submit" disabled={isSubmitting}>
+								{isSubmitting ? "Đang xử lý..." : data ? "Cập nhật" : "Tạo mới"}
+							</Button>
+						</div>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 }

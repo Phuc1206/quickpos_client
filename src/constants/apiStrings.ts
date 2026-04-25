@@ -15,10 +15,13 @@ const apiStrings = {
 		create: "/resources/customers/",
 		detail: "/resources/customers/detail",
 		selection: "/resources/customers/selection",
+		list: "/resources/customers/list",
+		update: "/resources/customers/",
 	},
 	order: {
 		create: "/resources/bills/",
-		detail: "/resources/bills/detail"
+		detail: "/resources/bills/detail",
+		list: "/resources/bills/list",
 	},
 } as const;
 

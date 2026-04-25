@@ -1,11 +1,21 @@
 import gateway from "@/api";
 import type { IPagination } from "@/types/common";
 import type { IProductData } from "@/types/product";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 
 export const useGetProductList = (payload: IPagination) => {
 	const query = useQuery({
-		queryKey: ["get-products-list", payload?.page, payload?.rows, payload?.search],
+		queryKey: [
+			"get-products-list",
+			payload?.page,
+			payload?.rows,
+			payload?.search,
+		],
 		queryFn: async () => {
 			try {
 				const res = await gateway.product.sendProductListRequest(payload);
@@ -14,7 +24,7 @@ export const useGetProductList = (payload: IPagination) => {
 				console.error("Failed to fetch product list:", error);
 				throw error;
 			}
-		}
+		},
 		// enabled: false
 	});
 	const queryData = (query.data as any)?.data?.menuItems as IProductData[];
@@ -31,7 +41,7 @@ export const useGetProductList = (payload: IPagination) => {
 	};
 };
 
-export const useGetInfiniteProducts = (payload: Omit<IPagination, 'page'>) => {
+export const useGetInfiniteProducts = (payload: Omit<IPagination, "page">) => {
 	const query = useInfiniteQuery({
 		queryKey: ["get-products-infinite", payload?.rows, payload?.search],
 		queryFn: async ({ pageParam = 1 }) => {
@@ -54,7 +64,8 @@ export const useGetInfiniteProducts = (payload: Omit<IPagination, 'page'>) => {
 		},
 	});
 
-	const productsList = query.data?.pages.flatMap((page) => page.menuItems as IProductData[]) || [];
+	const productsList =
+		query.data?.pages.flatMap((page) => page.menuItems as IProductData[]) || [];
 	const productListCount = query.data?.pages[0]?.count || 0;
 
 	return {
@@ -80,7 +91,7 @@ export const useUpdateProduct = () => {
 
 			// refresh list
 			queryClient.invalidateQueries({
-				queryKey: ["get-product-list"],
+				queryKey: ["get-products-list"],
 			});
 		},
 
@@ -90,25 +101,61 @@ export const useUpdateProduct = () => {
 	});
 };
 
-export const useGetProductDetail = (customerId: string) => {
+export const useGetProductDetail = (productId: string) => {
 	const query = useQuery({
-		queryKey: ["get-customer-detail", customerId],
+		queryKey: ["get-product-detail", productId],
 		queryFn: async () => {
 			try {
-				const res = await gateway.product.getProductDetailRequest(customerId);
+				const res = await gateway.product.getProductDetailRequest(productId);
 				return res?.data ?? null;
 			} catch (error: any) {
 				console.error("Failed to fetch product detail:", error);
 				throw error;
 			}
-		}
-		// enabled: false
+		},
+		enabled: !!productId,
 	});
 
 	const queryData = (query.data as any)?.data as IProductData[];
 
 	return {
 		productDetail: queryData,
-		...query
+		...query,
 	};
+};
+
+export const useCreateProduct = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (payload: any) => {
+			return await gateway.product.createProductRequest(payload);
+		},
+		onSuccess: () => {
+			// refresh list
+			queryClient.invalidateQueries({
+				queryKey: ["get-products-list"],
+			});
+		},
+		onError: (error: any) => {
+			console.error("Create product failed:", error);
+		},
+	});
+};
+
+export const useDeleteProduct = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return await gateway.product.deleteProductRequest(id);
+		},
+		onSuccess: () => {
+			// refresh list
+			queryClient.invalidateQueries({
+				queryKey: ["get-products-list"],
+			});
+		},
+		onError: (error: any) => {
+			console.error("Delete product failed:", error);
+		},
+	});
 };
