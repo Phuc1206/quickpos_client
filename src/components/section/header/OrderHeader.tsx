@@ -1,4 +1,5 @@
-import { Search, Receipt, LogOut, NotepadText } from 'lucide-react'
+// import { Search, Receipt, LogOut, NotepadText } from 'lucide-react'
+import { Search, LogOut, NotepadText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuthStore } from '@/zustand/authStore'
@@ -7,8 +8,8 @@ import { Spinner } from '@/components/ui/spinner'
 import { useOrderStore } from '@/zustand/orderStore'
 import { DraftModal } from '../order/draftModal'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-import { ResearchBillModal } from '../order/researchBillModal'
 import { NAME_SYSTEM } from '@/constants/permission'
+// import { ResearchBillModal } from '../order/researchBillModal'
 
 export default function OrderHeader() {
     const user = useAuthStore((state) => state.user);
@@ -58,7 +59,7 @@ export default function OrderHeader() {
                             <DraftModal />
                         </Dialog>
 
-                        <Dialog>
+                        {/* <Dialog>
                             <DialogTrigger asChild>
                                 <Button
                                     variant="outline"
@@ -72,7 +73,7 @@ export default function OrderHeader() {
                                 </Button>
                             </DialogTrigger>
                             <ResearchBillModal />
-                        </Dialog>
+                        </Dialog> */}
                     </section>
 
                     <div className="max-w-37.5 md:max-w-xs flex-1">
