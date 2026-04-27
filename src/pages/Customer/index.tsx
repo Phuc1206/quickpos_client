@@ -20,12 +20,14 @@ import {
 	useGetCustomerList,
 } from "@/services/customerServices";
 import CustomerDetailModal from "@/pages/Customer/CustomerDetailModal";
+import CustomerFormModal from "@/pages/Customer/CustomerFormModal";
 
 const CustomerPage = () => {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [rows] = useState(10);
 	const [openDetail, setOpenDetail] = useState(false);
+	const [openForm, setOpenForm] = useState(false);
 	const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
 	const debouncedSearch = useDebounce(search, 500);
 
@@ -62,7 +64,7 @@ const CustomerPage = () => {
 						className="w-64"
 					/>
 
-					<Button>+ Thêm khách</Button>
+					<Button onClick={() => setOpenForm(true)}>+ Thêm khách</Button>
 				</div>
 			</div>
 
@@ -111,17 +113,28 @@ const CustomerPage = () => {
 									<p className="text-xs text-muted-foreground">
 										{new Date(item.createdAt).toLocaleDateString("vi-VN")}
 									</p>
-
-									<Button
-										size="sm"
-										variant="outline"
-										onClick={() => {
-											setSelectedCustomer(item);
-											setOpenDetail(true);
-										}}
-									>
-										Xem
-									</Button>
+									<div className="flex gap-2">
+										<Button
+											size="sm"
+											variant="outline"
+											onClick={() => {
+												setSelectedCustomer(item);
+												setOpenDetail(true);
+											}}
+										>
+											Xem
+										</Button>
+										<Button
+											size="sm"
+											variant="secondary"
+											onClick={() => {
+												setSelectedCustomer(item);
+												setOpenForm(true);
+											}}
+										>
+											Sửa
+										</Button>
+									</div>
 								</div>
 							</CardContent>
 						</Card>
@@ -162,6 +175,13 @@ const CustomerPage = () => {
 				open={openDetail}
 				onClose={() => setOpenDetail(false)}
 				data={customerDetail?.data}
+				isLoading={isLoadingDetail}
+			/>
+			<CustomerFormModal
+				open={openForm}
+				onClose={() => setOpenForm(false)}
+				onSuccess={() => setOpenForm(false)}
+				data={customerDetail?.data.customer}
 				isLoading={isLoadingDetail}
 			/>
 		</div>

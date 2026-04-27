@@ -5,12 +5,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useCreateCustomer = () => {
+	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (payload: ICustomerPayload) =>
 			gateway.customer.sendCreateCustomerRequest(payload),
 		onSuccess: async (data) => {
 			toast.success(data?.data?.message || "Tạo khách hàng thành công", {
 				description: "Khách hàng đã được tạo thành công.",
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["get-customer-list"],
 			});
 		},
 		onError: (error) => {
@@ -35,7 +39,7 @@ export const useGetCustomerDetail = (customerId: string) => {
 				throw error;
 			}
 		},
-		// enabled: false
+		enabled: !!customerId,
 	});
 
 	const queryData = (query.data as any)?.data as ICustomerDetail[];

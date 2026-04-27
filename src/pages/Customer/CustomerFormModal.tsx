@@ -61,19 +61,23 @@ const CustomerFormModal = ({
 	// reset form khi mở modal
 	useEffect(() => {
 		if (!open) return;
-		if (isLoading) return;
 
 		reset({
 			name: data?.name || "",
 			phoneNumber: data?.phoneNumber || "",
 			address: data?.address || "",
 		});
-	}, [open, data, isLoading, reset]);
+	}, [open, data, reset]);
 
 	const onSubmit = (values: any) => {
 		if (data) {
 			updateCustomer(
-				{ id: data._id, payload: values },
+				{
+					id: data._id,
+					name: values.name,
+					phoneNumber: values.phoneNumber,
+					address: values.address,
+				},
 				{
 					onSuccess: () => {
 						onSuccess();
@@ -93,71 +97,81 @@ const CustomerFormModal = ({
 
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
-			<DialogContent className="max-w-md">
+			<DialogContent key={data?._id || "create"} className="max-w-md">
 				<DialogHeader>
 					<DialogTitle>
 						{data ? "Sửa khách hàng" : "Thêm khách hàng"}
 					</DialogTitle>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-					{/* NAME */}
-					<div>
-						<Label>Tên khách hàng</Label>
-						<Input
-							placeholder="Nhập tên"
-							{...register("name")}
-							disabled={isSubmitting}
-						/>
-						{errors.name && (
-							<p className="text-sm text-red-500">{errors.name.message}</p>
-						)}
-					</div>
+				{/* WRAPPER để overlay */}
+				<div className="relative">
+					{/* LOADING OVERLAY */}
+					{isLoading && (
+						<div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10 rounded-md">
+							<div className="w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
+						</div>
+					)}
 
-					{/* PHONE */}
-					<div>
-						<Label>Số điện thoại</Label>
-						<Input
-							placeholder="Nhập SĐT"
-							{...register("phoneNumber")}
-							disabled={isSubmitting}
-						/>
-						{errors.phoneNumber && (
-							<p className="text-sm text-red-500">
-								{errors.phoneNumber.message}
-							</p>
-						)}
-					</div>
-
-					{/* ADDRESS */}
-					<div>
-						<Label>Địa chỉ</Label>
-						<Input
-							placeholder="Nhập địa chỉ"
-							{...register("address")}
-							disabled={isSubmitting}
-						/>
-					</div>
-
-					{/* ACTION */}
-					<div className="flex justify-end gap-2 pt-2">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={onClose}
-							disabled={isSubmitting}
-						>
-							Hủy
-						</Button>
-
-						<Button type="submit" disabled={isSubmitting}>
-							{isSubmitting && (
-								<span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+						{/* NAME */}
+						<div>
+							<Label>Tên khách hàng</Label>
+							<Input
+								placeholder="Nhập tên"
+								{...register("name")}
+								disabled={isSubmitting || isLoading}
+							/>
+							{errors.name && (
+								<p className="text-sm text-red-500">{errors.name.message}</p>
 							)}
-							{data ? "Cập nhật" : "Tạo mới"}
-						</Button>
-					</div>
-				</form>
+						</div>
+
+						{/* PHONE */}
+						<div>
+							<Label>Số điện thoại</Label>
+							<Input
+								placeholder="Nhập SĐT"
+								{...register("phoneNumber")}
+								disabled={isSubmitting || isLoading}
+							/>
+							{errors.phoneNumber && (
+								<p className="text-sm text-red-500">
+									{errors.phoneNumber.message}
+								</p>
+							)}
+						</div>
+
+						{/* ADDRESS */}
+						<div>
+							<Label>Địa chỉ</Label>
+							<Input
+								placeholder="Nhập địa chỉ"
+								{...register("address")}
+								disabled={isSubmitting || isLoading}
+							/>
+						</div>
+
+						{/* ACTION */}
+						<div className="flex justify-end gap-2 pt-2">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={onClose}
+								disabled={isSubmitting || isLoading}
+							>
+								Hủy
+							</Button>
+
+							<Button type="submit" disabled={isSubmitting || isLoading}>
+								{isSubmitting && (
+									<span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+								)}
+								{data ? "Cập nhật" : "Tạo mới"}
+							</Button>
+						</div>
+					</form>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);

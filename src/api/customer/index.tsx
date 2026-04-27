@@ -55,7 +55,10 @@ const sendGetCustomerListRequest = async (payload: IPagination) => {
 
 const sendUpdateCustomerRequest = async (payload: ICustomerPayload) => {
 	try {
-		const response = await api.patch(apiStrings.customer.update, payload);
+		const response = await api.patch(
+			`${apiStrings.customer.update}${payload.id}`,
+			payload,
+		);
 		// console.log("Update customer request api:", response);
 		return response;
 	} catch (error) {
