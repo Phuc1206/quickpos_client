@@ -81,6 +81,7 @@ export interface IBillDetail {
         _id: string;
         name: string;
     };
+    employeeName: string;
 
     items: IBillMenuItem[];
 

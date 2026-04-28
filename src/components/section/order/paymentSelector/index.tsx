@@ -84,6 +84,8 @@ export default function PaymentSelector() {
                 const billData = (data as any)?.data?.data as IBillDetail;
                 setBill(billData);
 
+                console.log("Bill created:", billData);
+
                 const finalizeOrder = () => {
                     setStatusOrder(OrderStatus.PAYMENT_SUCCESS);
                 };

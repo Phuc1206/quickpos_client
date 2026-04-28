@@ -1,4 +1,4 @@
-import { type IBillDetail } from "@/types/order";
+import { PaymentMode, type IBillDetail } from "@/types/order";
 import { formatVND, UNIT_PRICE } from "@/utils";
 
 interface BillPrintTemplateProps {
@@ -68,7 +68,7 @@ export default function BillPrintTemplate({ bill }: BillPrintTemplateProps) {
 
                     <div className="grid grid-cols-[70px_1fr] gap-1">
                         <span className="text-gray-600">Nhân viên:</span>
-                        <span className="font-medium">{bill?.employeeId?.name || "Hệ thống"}</span>
+                        <span className="font-medium">{bill?.employeeName || "Hệ thống"}</span>
                     </div>
 
                     {bill?.customer && (
@@ -77,6 +77,7 @@ export default function BillPrintTemplate({ bill }: BillPrintTemplateProps) {
                             <span className="font-bold">{bill.customer.name}</span>
                         </div>
                     )}
+
                 </div>
 
 
@@ -110,27 +111,35 @@ export default function BillPrintTemplate({ bill }: BillPrintTemplateProps) {
                 {/* Summary & Payment */}
                 <div className="text-[12px] border-t border-dashed border-black pt-2 space-y-1">
                     <div className="flex justify-between">
-                        <span>Tổng số lượng:</span>
+                        <span>Tổng số lượng</span>
                         <span>{bill?.totalQuantity}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span>Phương thức thanh toán</span>
+                        <span>{bill?.paymentMethod === PaymentMode.CASH ? "Tiền mặt" : "Chuyển khoản"}</span>
                     </div>
                     {bill?.discount > 0 && (
                         <div className="flex justify-between">
-                            <span>Giảm giá:</span>
+                            <span>Giảm giá</span>
                             <span>-{formatCurrency(bill?.discount)}</span>
                         </div>
                     )}
                     <div className="flex justify-between font-bold text-base pt-1">
-                        <span>THÀNH TIỀN:</span>
+                        <span>THÀNH TIỀN</span>
                         <span>{formatCurrency(bill?.finalAmount)}</span>
                     </div>
                     <div className="flex justify-between pt-1">
-                        <span>Tiền khách đưa:</span>
-                        <span>{formatCurrency(bill?.cashReceived)}</span>
+                        <span>Tiền khách đưa</span>
+                        <span>{bill?.cashReceived > 0 ? formatCurrency(bill?.cashReceived) : formatCurrency(bill?.finalAmount)}</span>
                     </div>
-                    <div className="flex justify-between font-bold">
-                        <span>Tiền thừa:</span>
-                        <span>{formatCurrency(change > 0 ? change : 0)}</span>
-                    </div>
+                    {
+                        bill?.paymentMethod === PaymentMode.CASH && (
+                            <div className="flex justify-between">
+                                <span>Tiền thừa trả khách</span>
+                                <span>{formatCurrency(change > 0 ? change : 0)}</span>
+                            </div>
+                        )
+                    }
                 </div>
 
                 {/* Footer */}
