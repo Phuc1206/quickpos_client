@@ -11,7 +11,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const formatMoney = (v?: number) => (v ?? 0).toLocaleString("vi-VN") + " đ";
 
 const CustomerDetailModal = ({ open, onClose, data, isLoading }: any) => {
-	console.log(data);
+	const customer = data?.customer;
+	const bills = data?.bills || [];
+
+	const totalAmount = bills.reduce(
+		(sum: number, b: any) => sum + (b.finalAmount || 0),
+		0,
+	);
+
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
 			<DialogContent className="max-w-2xl">
@@ -19,34 +26,32 @@ const CustomerDetailModal = ({ open, onClose, data, isLoading }: any) => {
 					<DialogTitle>Chi tiết khách hàng</DialogTitle>
 				</DialogHeader>
 
-				{isLoading || !data ? (
+				{isLoading || !customer ? (
 					<div className="py-10 text-center text-muted-foreground">
 						Đang tải...
 					</div>
 				) : (
-					<div className="space-y-4">
+					<div className="space-y-5">
 						{/* INFO */}
 						<div className="grid grid-cols-2 gap-4 text-sm">
 							<div>
 								<p className="text-muted-foreground">Tên</p>
-								<p className="font-semibold">{data.customer.name}</p>
+								<p className="font-semibold">{customer.name}</p>
 							</div>
 
 							<div>
 								<p className="text-muted-foreground">SĐT</p>
-								<p>{data.customer.phoneNumber}</p>
+								<p>{customer.phoneNumber}</p>
 							</div>
 
 							<div className="col-span-2">
 								<p className="text-muted-foreground">Địa chỉ</p>
-								<p>{data.customer.address || "Không có"}</p>
+								<p>{customer.address || "Không có"}</p>
 							</div>
 
 							<div>
 								<p className="text-muted-foreground">Ngày tạo</p>
-								<p>
-									{new Date(data.customer.createdAt).toLocaleString("vi-VN")}
-								</p>
+								<p>{new Date(customer.createdAt).toLocaleString("vi-VN")}</p>
 							</div>
 
 							<div>
@@ -57,19 +62,36 @@ const CustomerDetailModal = ({ open, onClose, data, isLoading }: any) => {
 
 						<Separator />
 
+						{/* SUMMARY */}
+						<div className="grid grid-cols-2 gap-4 text-sm">
+							<div className="bg-muted/50 p-3 rounded-lg">
+								<p className="text-muted-foreground">Số đơn</p>
+								<p className="text-lg font-semibold">{bills.length}</p>
+							</div>
+
+							<div className="bg-muted/50 p-3 rounded-lg">
+								<p className="text-muted-foreground">Tổng chi tiêu</p>
+								<p className="text-lg font-semibold text-red-500">
+									{formatMoney(totalAmount)}
+								</p>
+							</div>
+						</div>
+
+						<Separator />
+
 						{/* BILL HISTORY */}
 						<div>
 							<p className="font-semibold mb-2">Lịch sử mua hàng</p>
 
-							{data.bills.length === 0 ? (
+							{bills.length === 0 ? (
 								<p className="text-sm text-muted-foreground">Chưa có hóa đơn</p>
 							) : (
 								<ScrollArea className="h-64 pr-3">
 									<div className="space-y-2">
-										{data.bills.map((bill: any) => (
+										{bills.map((bill: any) => (
 											<div
 												key={bill._id}
-												className="flex justify-between items-center border rounded-lg p-2 text-sm hover:bg-muted/50"
+												className="flex justify-between items-center border rounded-lg p-3 text-sm hover:bg-muted/50 transition"
 											>
 												<div>
 													<p className="font-medium">{bill.code}</p>
@@ -84,6 +106,7 @@ const CustomerDetailModal = ({ open, onClose, data, isLoading }: any) => {
 													<p className="font-semibold text-red-500">
 														{formatMoney(bill.finalAmount)}
 													</p>
+
 													<Badge variant="outline">{bill.paymentMethod}</Badge>
 												</div>
 											</div>

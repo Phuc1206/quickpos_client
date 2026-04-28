@@ -17,11 +17,19 @@ const apiStrings = {
 		selection: "/resources/customers/selection",
 		list: "/resources/customers/list",
 		update: "/resources/customers/",
+		delete: "/resources/customers/",
 	},
 	order: {
 		create: "/resources/bills/",
 		detail: "/resources/bills/detail",
 		list: "/resources/bills/list",
+	},
+	employee: {
+		create: "/resources/employees/",
+		detail: "/resources/employees/detail",
+		list: "/resources/employees/list",
+		update: "/resources/employees/",
+		delete: "/resources/employees/",
 	},
 } as const;
 

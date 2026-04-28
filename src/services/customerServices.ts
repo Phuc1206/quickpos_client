@@ -125,3 +125,24 @@ export const useUpdateCustomer = () => {
 		},
 	});
 };
+
+export const useDeleteCustomer = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => gateway.customer.sendDeleteCustomerRequest(id),
+		onSuccess: async (data) => {
+			queryClient.invalidateQueries(["get-customer-detail"]);
+			queryClient.invalidateQueries(["get-customer-list"]);
+			toast.success(data?.data?.message || "Xóa khách hàng thành công", {
+				description: "Khách hàng đã được xóa thành công.",
+			});
+		},
+		onError: (error) => {
+			console.log("Delete customer error:", error);
+			toast.error("Xóa khách hàng thất bại!", {
+				description: "Vui lòng kiểm tra lại thông tin khách hàng.",
+			});
+		},
+	});
+};

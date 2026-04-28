@@ -66,12 +66,23 @@ const sendUpdateCustomerRequest = async (payload: ICustomerPayload) => {
 		throw error;
 	}
 };
+const sendDeleteCustomerRequest = async (id: string) => {
+	try {
+		const response = await api.delete(`${apiStrings.customer.delete}${id}`);
+		// console.log("Delete customer request api:", response);
+		return response;
+	} catch (error) {
+		console.error("Delete customer request failed:", error);
+		throw error;
+	}
+};
 const customer = {
 	sendCreateCustomerRequest,
 	sendGetCustomerDetailRequest,
 	sendGetCustomerSelectionRequest,
 	sendGetCustomerListRequest,
 	sendUpdateCustomerRequest,
+	sendDeleteCustomerRequest,
 };
 
 export default customer;

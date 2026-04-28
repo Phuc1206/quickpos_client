@@ -3,7 +3,6 @@ import useDebounce from "@/hooks/useDebounce";
 
 // shadcn
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +20,8 @@ import {
 } from "@/services/customerServices";
 import CustomerDetailModal from "@/pages/Customer/CustomerDetailModal";
 import CustomerFormModal from "@/pages/Customer/CustomerFormModal";
+import { Trash2 } from "lucide-react";
+import { useDeleteCustomer } from "@/services/customerServices";
 
 const CustomerPage = () => {
 	const [search, setSearch] = useState("");
@@ -41,7 +42,15 @@ const CustomerPage = () => {
 	const { data: customerDetail, isLoading: isLoadingDetail } =
 		useGetCustomerDetail(selectedCustomer?._id);
 	const totalPages = Math.ceil((customerListCount || 0) / rows);
+	const { mutate: deleteCustomer, isLoading: isDeleting } = useDeleteCustomer();
+	const handleDelete = (id: string) => {
+		const confirmDelete = window.confirm(
+			"Bạn có chắc muốn xóa khách hàng này?",
+		);
+		if (!confirmDelete) return;
 
+		deleteCustomer(id);
+	};
 	return (
 		<div className="p-6 space-y-6">
 			{/* HEADER */}
@@ -69,7 +78,7 @@ const CustomerPage = () => {
 			</div>
 
 			{/* CONTENT */}
-			{isLoading || isRefetching ? (
+			{isLoading || isRefetching || isDeleting ? (
 				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
 					{Array.from({ length: 10 }).map((_, i) => (
 						<Card key={i} className="animate-pulse">
@@ -98,7 +107,22 @@ const CustomerPage = () => {
 								<div className="flex items-center justify-between">
 									<h2 className="font-semibold line-clamp-1">{item.name}</h2>
 
-									<Badge variant="secondary">KH</Badge>
+									<Button
+										type="button"
+										variant="destructive"
+										size="icon"
+										onClick={(e) => {
+											e.stopPropagation();
+											handleDelete(item._id);
+										}}
+										disabled={isDeleting}
+									>
+										{isDeleting ? (
+											<span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+										) : (
+											<Trash2 className="w-4 h-4" />
+										)}
+									</Button>
 								</div>
 
 								<p className="text-sm text-muted-foreground">
