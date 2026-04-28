@@ -29,7 +29,7 @@ export function DraftModal() {
                                 key={order.code}
                                 name={order.note || ""}
                                 itemCount={order.orders.length}
-                                totalPrice={order.totalPrice}
+                                totalPrice={Number(order.totalPrice)}
                                 timestamp={order.timeOrder}
                                 onDelete={() => removeDraftOrderById(order.code)}
                                 onResume={() => {
