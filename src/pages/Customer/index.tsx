@@ -39,7 +39,7 @@ const CustomerPage = () => {
 			search: debouncedSearch,
 		});
 
-	const { data: customerDetail, isLoading: isLoadingDetail } =
+	const { data: customerDetail, isFetching: isLoadingDetail } =
 		useGetCustomerDetail(selectedCustomer?._id);
 	const totalPages = Math.ceil((customerListCount || 0) / rows);
 	const { mutate: deleteCustomer, isLoading: isDeleting } = useDeleteCustomer();
@@ -203,7 +203,10 @@ const CustomerPage = () => {
 			/>
 			<CustomerFormModal
 				open={openForm}
-				onClose={() => setOpenForm(false)}
+				onClose={() => {
+					setSelectedCustomer(null);
+					setOpenForm(false);
+				}}
 				onSuccess={() => setOpenForm(false)}
 				data={customerDetail?.data.customer}
 				isLoading={isLoadingDetail}

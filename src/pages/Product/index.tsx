@@ -42,7 +42,7 @@ const ProductPage = () => {
 		search: debouncedSearch,
 	});
 
-	const { productDetail, isLoading: isLoadingDetail } = useGetProductDetail(
+	const { productDetail, isFetching: isLoadingDetail } = useGetProductDetail(
 		selectedItem?._id,
 	);
 	const { mutate: deleteProduct, isLoading: isLoadingDelete } =
@@ -197,15 +197,24 @@ const ProductPage = () => {
 			{/* Modals */}
 			<ProductFormModal
 				open={open}
-				onClose={() => setOpen(false)}
-				onSuccess={() => setOpen(false)}
+				onClose={() => {
+					setOpen(false);
+					setSelectedItem(null);
+				}}
+				onSuccess={() => {
+					setOpen(false);
+					setSelectedItem(null);
+				}}
 				data={productDetail}
 				isLoading={isLoadingDetail}
 			/>
 
 			<ProductDetailModal
 				open={openView}
-				onClose={() => setOpenView(false)}
+				onClose={() => {
+					setSelectedItem(null);
+					setOpenView(false);
+				}}
 				data={productDetail}
 			/>
 		</div>

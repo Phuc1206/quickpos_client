@@ -24,7 +24,7 @@ import {
 
 // Modals
 import EmployeeDetailModal from "@/pages/Employee/EmployeeDetailModal";
-import EmployeeFormModal from "@/pages/Employee/EmployeeFormModal";
+import { EmployeeFormModal } from "@/pages/Employee/EmployeeFormModal";
 
 const EmployeePage = () => {
 	const [search, setSearch] = useState("");
@@ -46,9 +46,11 @@ const EmployeePage = () => {
 			search: debouncedSearch,
 		});
 
-	const { data: employeeDetail, isLoading: isLoadingDetail } =
-		useGetEmployeeDetail(selectedEmployee?._id);
-
+	const { data: employeeDetail, isFetching: isLoadingDetail } =
+		useGetEmployeeDetail(selectedEmployee?._id, {
+			enabled: openForm && !!selectedEmployee?._id,
+		});
+	console.log("employeeDetail", isLoadingDetail);
 	const { mutate: deleteEmployee } = useDeleteEmployee();
 
 	const totalPages = Math.ceil((employeeListCount || 0) / rows);
@@ -218,15 +220,24 @@ const EmployeePage = () => {
 			{/* MODALS */}
 			<EmployeeDetailModal
 				open={openDetail}
-				onClose={() => setOpenDetail(false)}
+				onClose={() => {
+					setOpenDetail(false);
+					setSelectedEmployee(null);
+				}}
 				data={employeeDetail?.data}
 				isLoading={isLoadingDetail}
 			/>
 
 			<EmployeeFormModal
 				open={openForm}
-				onClose={() => setOpenForm(false)}
-				onSuccess={() => setOpenForm(false)}
+				onClose={() => {
+					setSelectedEmployee(null);
+					setOpenForm(false);
+				}}
+				onSuccess={() => {
+					setSelectedEmployee(null);
+					setOpenForm(false);
+				}}
 				data={employeeDetail?.data}
 				isLoading={isLoadingDetail}
 			/>
