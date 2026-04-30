@@ -14,7 +14,10 @@ const sendCreateEmployeeRequest = async (payload: any) => {
 
 const sendUpdateEmployeeRequest = async (payload: any) => {
 	try {
-		const response = await api.patch(apiStrings.employee.update, payload);
+		const response = await api.patch(
+			`${apiStrings.employee.update}${payload.id}`,
+			payload,
+		);
 		// console.log("Product create request api:", response);
 		return response;
 	} catch (error) {

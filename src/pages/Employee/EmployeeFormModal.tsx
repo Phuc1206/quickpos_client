@@ -30,12 +30,17 @@ export const EmployeeFormModal = ({
 
 					{data ? (
 						<UpdateEmployeeForm
+							key={data._id}
 							data={data}
 							onSuccess={onSuccess}
 							onClose={onClose}
 						/>
 					) : (
-						<CreateEmployeeForm onSuccess={onSuccess} onClose={onClose} />
+						<CreateEmployeeForm
+							key="create"
+							onSuccess={onSuccess}
+							onClose={onClose}
+						/>
 					)}
 				</div>
 			</DialogContent>

@@ -10,7 +10,8 @@ export const useCreateEmployee = () => {
 		mutationFn: async (payload: any) => {
 			return await gateway.employee.sendCreateEmployeeRequest(payload);
 		},
-		onSuccess: async (data: any) => () => {
+		onSuccess: async (data: any) => {
+			console.log("Create employee success:", data);
 			toast.success(data?.message || "Tạo nhân viên thành công", {
 				description: "Nhân viên đã được tạo thành công.",
 			});
@@ -86,7 +87,7 @@ export const useUpdateEmployee = () => {
 		mutationFn: async (payload: any) => {
 			return await gateway.employee.sendUpdateEmployeeRequest(payload);
 		},
-		onSuccess: async (data: any) => () => {
+		onSuccess: async (data: any) => {
 			toast.success(data?.data?.message || "Cập nhật nhân viên thành công", {
 				description: "Nhân viên đã được cập nhật thành công.",
 			});

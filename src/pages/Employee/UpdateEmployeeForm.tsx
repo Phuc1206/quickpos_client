@@ -24,23 +24,17 @@ const UpdateEmployeeForm = ({ data, onSuccess, onClose }: any) => {
 	});
 
 	useEffect(() => {
-		if (data) {
-			reset({
-				name: data.name || "",
-				phoneNumber: data.phoneNumber || "",
-				address: data.address || "",
-			});
-		} else {
-			// 👇 reset về rỗng khi không có data
-			reset({
-				name: "",
-				phoneNumber: "",
-				address: "",
-			});
-		}
-	}, [data, reset]);
+		if (!data) return;
+
+		reset({
+			name: data.name || "",
+			phoneNumber: data.phoneNumber || "",
+			address: data.address || "",
+		});
+	}, [data?._id]);
 
 	const onSubmit = (values: EmployeeFormValues) => {
+		console.log("values", values);
 		mutate(
 			{
 				id: data._id,
