@@ -83,10 +83,10 @@ export const useGetEmployeeDetail = (employeeId: string, options?: any) => {
 
 export const useUpdateEmployee = () => {
 	const queryClient = useQueryClient();
+
 	return useMutation({
-		mutationFn: async (payload: any) => {
-			return await gateway.employee.sendUpdateEmployeeRequest(payload);
-		},
+		mutationFn: (payload: any) =>
+			gateway.employee.sendUpdateEmployeeRequest(payload),
 		onSuccess: async (data: any) => {
 			toast.success(data?.data?.message || "Cập nhật nhân viên thành công", {
 				description: "Nhân viên đã được cập nhật thành công.",

@@ -48,7 +48,7 @@ const EmployeePage = () => {
 
 	const { data: employeeDetail, isFetching: isLoadingDetail } =
 		useGetEmployeeDetail(selectedEmployee?._id, {
-			enabled: openForm && !!selectedEmployee?._id,
+			enabled: !!selectedEmployee?._id && (openForm || openDetail),
 		});
 	console.log("employeeDetail", isLoadingDetail);
 	const { mutate: deleteEmployee } = useDeleteEmployee();

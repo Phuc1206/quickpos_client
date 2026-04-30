@@ -13,6 +13,7 @@ const UpdateEmployeeForm = ({ data, onSuccess, onClose }: any) => {
 		register,
 		handleSubmit,
 		reset,
+		watch,
 		formState: { errors },
 	} = useForm<EmployeeFormValues>({
 		resolver: zodResolver(employeeSchema),
@@ -22,7 +23,8 @@ const UpdateEmployeeForm = ({ data, onSuccess, onClose }: any) => {
 			address: "",
 		},
 	});
-
+	const formValues = watch();
+	console.log("Form values:", formValues);
 	useEffect(() => {
 		if (!data) return;
 
@@ -31,10 +33,9 @@ const UpdateEmployeeForm = ({ data, onSuccess, onClose }: any) => {
 			phoneNumber: data.phoneNumber || "",
 			address: data.address || "",
 		});
-	}, [data?._id]);
+	}, [data, reset]);
 
 	const onSubmit = (values: EmployeeFormValues) => {
-		console.log("values", values);
 		mutate(
 			{
 				id: data._id,
