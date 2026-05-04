@@ -63,7 +63,7 @@ export const useGetCustomerSelection = (searchTerm?: string) => {
 				throw error;
 			}
 		},
-		// enabled: false
+		enabled: true
 	});
 
 	const queryData = (query.data as any)?.data as ICustomerDetail[];

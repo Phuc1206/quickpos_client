@@ -21,7 +21,7 @@ import { CustomerItem } from "../customerItem"
 export function CustomerModal({ onClose }: { onClose: () => void }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
-    const { customerSelection } = useGetCustomerSelection();
+    const { customerSelection, refetch: refetchCustomerSelection } = useGetCustomerSelection();
 
     const customers = customerSelection?.filter((customer) => {
         const name = customer.name?.toLowerCase() || "";
@@ -80,6 +80,7 @@ export function CustomerModal({ onClose }: { onClose: () => void }) {
                                 setIsAddCustomerOpen(false)
                                 onClose?.()
                             }}
+                            refetchCustomerSelection={refetchCustomerSelection}
                         />
                     </DialogContent>
                 </Dialog>
@@ -117,7 +118,15 @@ export function CustomerModal({ onClose }: { onClose: () => void }) {
     )
 }
 
-function AddCustomerForm({ onCancel, onSave }: { onCancel: () => void; onSave: () => void }) {
+function AddCustomerForm({
+    onCancel,
+    onSave,
+    refetchCustomerSelection,
+}: {
+    onCancel: () => void
+    onSave: () => void
+    refetchCustomerSelection: () => void
+}) {
     const { updateCustomerOrderForm } = useOrderStore();
 
     const [formCustomer, setFormCustomer] = useState<ICustomerPayload>({
@@ -135,6 +144,7 @@ function AddCustomerForm({ onCancel, onSave }: { onCancel: () => void; onSave: (
                 onSuccess: (data) => {
                     const createdCustomer = (data as any)?.data?.data as ICustomerDetail;
                     updateCustomerOrderForm(createdCustomer);
+                    refetchCustomerSelection();
                     console.log("Customer created successfully:", createdCustomer);
                 },
             });
