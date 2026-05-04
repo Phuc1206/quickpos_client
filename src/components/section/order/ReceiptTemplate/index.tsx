@@ -68,7 +68,7 @@ export default function BillPrintTemplate({ bill }: BillPrintTemplateProps) {
 
                     <div className="grid grid-cols-[70px_1fr] gap-1">
                         <span className="text-gray-600">Nhân viên:</span>
-                        <span className="font-medium">{bill?.employeeName || "Hệ thống"}</span>
+                        <span className="font-medium">{bill?.employeeName || bill.employeeId?.name || "Hệ thống"}</span>
                     </div>
 
                     {bill?.customer && (
