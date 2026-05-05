@@ -1,8 +1,22 @@
-import { Search } from "lucide-react";
+import { LogOut, Search } from "lucide-react";
 import { useAuthStore } from "@/zustand/authStore";
+import { Button } from "./button";
+import { useLogout } from "@/services/authServices";
+import { Spinner } from "./spinner";
 
 export default function Header() {
 	const user = useAuthStore((state) => state.user);
+	const { mutateAsync: logoutMutation, isPending: isLoggingOut } = useLogout();
+
+	const handleLogout = async () => {
+		try {
+			await logoutMutation();
+		}
+		catch (error) {
+			console.error("Logout failed:", error);
+		}
+	};
+
 
 	return (
 		<div className="bg-white h-16 flex items-center justify-between px-6 border-b shadow-sm">
@@ -37,6 +51,16 @@ export default function Header() {
 						<p className="text-xs text-gray-500">{user?.level || "ADMIN"}</p>
 					</div>
 				</div>
+
+				<Button
+					variant="outline"
+					size="icon"
+					className="h-9 w-9 shrink-0 bg-red-100 text-destructive transition-colors hover:bg-red-200 hover:text-destructive-hover"
+					onClick={handleLogout}
+					disabled={isLoggingOut}
+				>
+					{isLoggingOut ? <Spinner /> : <LogOut className="h-4 w-4" />}
+				</Button>
 			</div>
 		</div>
 	);

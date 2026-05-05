@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 
 // icons (lucide)
 import {
-	LayoutDashboard,
 	UtensilsCrossed,
 	Receipt,
 	Users,
@@ -44,10 +43,10 @@ export default function DashboardLayout() {
 				{/* Menu */}
 				<ScrollArea className="flex-1 px-3 py-4">
 					<nav className="space-y-1">
-						<NavLink to={SLUG_NAME.FEATURE.DASHBOARD} className={navItemClass}>
+						{/* <NavLink to={SLUG_NAME.FEATURE.DASHBOARD} className={navItemClass}>
 							<LayoutDashboard size={18} />
 							Dashboard
-						</NavLink>
+						</NavLink> */}
 
 						<NavLink to={SLUG_NAME.FEATURE.PRODUCT} className={navItemClass}>
 							<UtensilsCrossed size={18} />

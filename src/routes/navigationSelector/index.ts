@@ -16,10 +16,10 @@ export const navigationSelector = async (userRole: TRole) => {
 export const getDefaultPageByRole = (role: TRole) => {
 	switch (role) {
 		case ROLES.ADMIN:
-			return SLUG_NAME.FEATURE.DASHBOARD;
+			return SLUG_NAME.FEATURE.PRODUCT;
 		case ROLES.STAFF:
 			return SLUG_NAME.FEATURE.ORDER;
 		default:
-			return SLUG_NAME.FEATURE.DASHBOARD;
+			return SLUG_NAME.FEATURE.PRODUCT;
 	}
 };

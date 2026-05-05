@@ -103,7 +103,7 @@ export default function OrderHeader() {
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-9 w-9 shrink-0 hover:bg-red-100 hover:text-destructive transition-colors"
+                            className="h-9 w-9 shrink-0 bg-red-100 text-destructive transition-colors hover:bg-red-200 hover:text-destructive-hover"
                             onClick={handleLogout}
                             disabled={isLoggingOut}
                         >

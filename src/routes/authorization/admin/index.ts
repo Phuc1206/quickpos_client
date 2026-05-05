@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/layout/dashboard";
 const administration: TNavigationConfig = {
 	IndexPageComponent: DashboardLayout,
 	children: [
-		ROUTE_REGISTRY[SLUG_NAME.FEATURE.DASHBOARD],
+		// ROUTE_REGISTRY[SLUG_NAME.FEATURE.DASHBOARD],
 		ROUTE_REGISTRY[SLUG_NAME.FEATURE.PRODUCT],
 		ROUTE_REGISTRY[SLUG_NAME.FEATURE.EMPLOYEE],
 		ROUTE_REGISTRY[SLUG_NAME.FEATURE.CUSTOMER],
